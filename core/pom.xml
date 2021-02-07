@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.oboehm</groupId>
+    <artifactId>gdv-xport</artifactId>
+    <version>4.2.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>gdv-xport-core</artifactId>
+  <packaging>jar</packaging>
+  <name>GDV.XPort-Core</name>
+
+  <!-- More Project Information -->
+  <description>
+    gdv-xport-core ist die Core-Bibliothek fuer den Umgang mit dem GDV-Format.
+    Sie liefert Basis-Typen fuer den Export und Export dieses Datenformats.
+  </description>
+
+  <dependencies>
+
+    <!-- Apache Commons -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+
+    <!-- Validation -->
+    <dependency>
+      <groupId>de.jfachwert</groupId>
+      <artifactId>jfachwert</artifactId>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.patterntesting</groupId>
+      <artifactId>patterntesting-rt</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.jamonapi</groupId>
+          <artifactId>jamon</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>
