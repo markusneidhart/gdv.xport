@@ -1,0 +1,17 @@
+https://maven-badges.herokuapp.com/maven-central/com.github.oboehm/gdv-xport-core[image:https://maven-badges.herokuapp.com/maven-central/com.github.oboehm/gdv-xport-core/badge.svg[Maven Metadata]]
+
+
+
+= Was ist gdv-xport-core?
+
+Nachdem mit v5 die Funktionalität und damit auch die Komplexität weiter angestiegen ist, wurde die Basis-Funktionalität in das core-Modul ausgegliedert
+Der Fokus liegt hierbei auf eine übersichtliche API, um den Einstieg so einfach wie möglich zu gestalten.
+Die API orientiert sich an der Beschreibung des GDV-Handbuchs, damit sich auch Quereinsteiger aus dem COBOL-Bereich darin zurechtfinden.
+
+Um Namenskonflikte mit der ursprünglichen Bibliothek (link:../lib/README.adoc[gdv-xport-lib]) zu vermeiden, erhielten alle Klasse im core-Modul den Prefix 'Gdv'.
+
+
+
+== Weitere Infos
+
+oberstes link:../README.adoc[README]
