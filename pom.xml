@@ -15,6 +15,7 @@
   <name>GDV.XPort</name>
 
   <modules>
+    <module>core</module>
     <module>lib</module>
     <module>service</module>
     <module>deprecated</module>

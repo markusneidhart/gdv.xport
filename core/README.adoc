@@ -8,7 +8,16 @@ Nachdem mit v5 die Funktionalität und damit auch die Komplexität weiter angest
 Der Fokus liegt hierbei auf eine übersichtliche API, um den Einstieg so einfach wie möglich zu gestalten.
 Die API orientiert sich an der Beschreibung des GDV-Handbuchs, damit sich auch Quereinsteiger aus dem COBOL-Bereich darin zurechtfinden.
 
-Um Namenskonflikte mit der ursprünglichen Bibliothek (link:../lib/README.adoc[gdv-xport-lib]) zu vermeiden, erhielten alle Klasse im core-Modul den Prefix 'Gdv'.
+gdv-xport-core unterstützt nur die XML-Beschreibung, wie sie der GDV über link:http://www.gdv-online.de/vuvm/bestand/best_2018.htm[gdv-online] bereitstellt.
+Unterstützung von Satz-Beschreibungen über Enums, die in den Anfängen der gdv.xport-Bibliothek verwendet wurden, bleibt gdv-xport-lib vorbehalten.
+Dies hilft, die API von gdv-xport-core übersichtlich zu halten.
+
+Ein weiterer Fokus liegt auf dem Speicherverbrauch.
+Da es in der Vergangenheit vor allem beim Import zu Speicherengpässen kommen kann, wurde beim Design der Klassen auf einen schmalen Footprint geachtet.
+Auch die Bibliotheken, von denen gdv-xport-core abhängt, wurde auf das Notwendigste beschränkt.
+
+Um Namenskonflikte mit der ursprünglichen Bibliothek (link:../lib/README.adoc[gdv-xport-lib]) zu vermeiden, erhalten Klassen im core-Modul den Prefix 'Gdv'.
+Bei neuen Klassen, die in v4 noch nicht vorhanden sind, wird auf den Prefix verzichtet.
 
 
 

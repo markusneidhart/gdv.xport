@@ -1,11 +1,11 @@
-package gdv.xport.feld;
+package gdv.xport.core;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Unit-Tests fuer gdv.xport.feld.ByteAdresse.
+ * Unit-Tests fuer gdv.xport.core.ByteAdresse.
  *
  * @author <a href="ob@aosd.de">oliver</a>
  */

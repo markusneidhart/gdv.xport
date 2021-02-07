@@ -19,8 +19,8 @@
 package gdv.xport;
 
 import gdv.xport.config.Config;
+import gdv.xport.core.ByteAdresse;
 import gdv.xport.feld.Bezeichner;
-import gdv.xport.feld.ByteAdresse;
 import gdv.xport.feld.Datum;
 import gdv.xport.feld.Feld;
 import gdv.xport.satz.Datensatz;

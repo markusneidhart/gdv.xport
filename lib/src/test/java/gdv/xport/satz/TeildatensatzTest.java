@@ -18,6 +18,7 @@
 
 package gdv.xport.satz;
 
+import gdv.xport.core.ByteAdresse;
 import gdv.xport.feld.*;
 import gdv.xport.satz.feld.Feld100;
 import gdv.xport.satz.feld.common.VertragsStatus;

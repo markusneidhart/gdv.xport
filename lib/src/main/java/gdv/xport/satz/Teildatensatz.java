@@ -19,7 +19,11 @@
 package gdv.xport.satz;
 
 import gdv.xport.config.Config;
-import gdv.xport.feld.*;
+import gdv.xport.core.ByteAdresse;
+import gdv.xport.feld.Bezeichner;
+import gdv.xport.feld.Feld;
+import gdv.xport.feld.NumFeld;
+import gdv.xport.feld.Zeichen;
 import gdv.xport.io.ImportException;
 import gdv.xport.util.SatzTyp;
 import net.sf.oval.ConstraintViolation;

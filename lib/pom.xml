@@ -145,6 +145,12 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>com.github.oboehm</groupId>
+      <artifactId>gdv-xport-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- Apache Commons -->
     <dependency>
       <groupId>commons-lang</groupId>

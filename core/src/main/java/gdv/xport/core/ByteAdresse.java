@@ -16,12 +16,14 @@
  * (c)reated 06.01.2021 by Oli B. (ob@aosd.de)
  */
 
-package gdv.xport.feld;
+package gdv.xport.core;
 
 import de.jfachwert.Fachwert;
 import de.jfachwert.SimpleValidator;
 import de.jfachwert.pruefung.exception.InvalidValueException;
 import org.apache.commons.lang3.Range;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Mit der Klasse ByteAdresse wird ein Feld innherhalb eines Teildatensatzes
@@ -30,6 +32,7 @@ import org.apache.commons.lang3.Range;
  * @author <a href="ob@aosd.de">oliver</a>
  * @since 5.0 (06.01.21)
  */
+@Immutable
 public class ByteAdresse extends Number implements Fachwert {
 
     private static final Validator VALIDATOR = new Validator();

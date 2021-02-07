@@ -20,6 +20,7 @@ package gdv.xport.satz;
 
 import gdv.xport.annotation.FelderInfo;
 import gdv.xport.config.Config;
+import gdv.xport.core.ByteAdresse;
 import gdv.xport.feld.*;
 import gdv.xport.satz.feld.Feld200;
 import gdv.xport.satz.feld.MetaFeldInfo;
