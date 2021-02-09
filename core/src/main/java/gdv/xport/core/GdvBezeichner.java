@@ -18,6 +18,7 @@
 package gdv.xport.core;
 
 import de.jfachwert.Text;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
 /**
@@ -38,7 +39,7 @@ public class GdvBezeichner {
 
     public GdvBezeichner(String name, String technischerName) {
         this.name = name;
-        this.technischerName = technischerName;
+        this.technischerName = StringUtils.isEmpty(technischerName) ? toTechnischerName(name) : technischerName;
     }
 
     private static String toTechnischerName(String input) {
@@ -72,6 +73,8 @@ public class GdvBezeichner {
                 return "Vs";
             case "Waehrungseinheiten":
                 return "WE";
+            case "VUNummer":
+                return "VuNr";
             default:
                 if ((word.length() == 3) && (word.toLowerCase().charAt(0) == 'd') && (word.charAt(2) != 'n')) {
                     return "";
