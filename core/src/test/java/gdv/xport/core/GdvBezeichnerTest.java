@@ -56,6 +56,18 @@ public class GdvBezeichnerTest {
         assertEquals("GeschaeftsstelleVermittler", vermittler.getTechnischerName());
     }
 
+    @Test
+    public void testGetTechnischerNameEmpty() {
+        GdvBezeichner sparte = new GdvBezeichner("Sparte", "");
+        assertEquals(sparte.getName(), sparte.getTechnischerName());
+    }
+
+    @Test
+    public void testGetTechnischerNameVuNr() {
+        GdvBezeichner vunr = new GdvBezeichner("VU-Nummer");
+        assertEquals("VuNr", vunr.getTechnischerName());
+    }
+
     /**
      * Test-Methode fuer {@link GdvBezeichner#getTechnischerName()}. Namen, die
      * auf "Datum" aufhoeren, haben meist "Dat" als Endung fuer den technischen

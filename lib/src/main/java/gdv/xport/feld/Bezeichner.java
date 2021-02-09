@@ -20,7 +20,7 @@ package gdv.xport.feld;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gdv.xport.annotation.FeldInfo;
-import gdv.xport.feld.internal.UmlautMapper;
+import gdv.xport.core.GdvBezeichner;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +42,7 @@ import java.util.*;
  * @author oliver
  * @since 15.10.2009
  */
-public final class Bezeichner {
+public final class Bezeichner extends GdvBezeichner {
 
     private static final Logger LOG = LogManager.getLogger(Bezeichner.class);
     private static final Map<String, String> MAPPING = new HashMap<>();
@@ -1385,9 +1385,6 @@ public final class Bezeichner {
     public static final Bezeichner ZUZAHLUNGSRECHT = new Bezeichner("Zuzahlungsrecht");
     public static final Bezeichner ZWANG_ZUR_BUZ = new Bezeichner("Zwang zur BUZ", "ZwangZurBuz");
 
-    private final String name;
-    private final String technischerName;
-    private final int hash;
     private final Set<Bezeichner> variants = new HashSet<>();
 
     // Mapping fuer manche Bezeichner (Name <--> technischer Name)
@@ -1431,7 +1428,7 @@ public final class Bezeichner {
      * @since 1.0
      */
     public Bezeichner(final String name) {
-        this(name, toTechnischerName(name));
+        super(name);
     }
 
     /**
@@ -1453,9 +1450,7 @@ public final class Bezeichner {
      * @since 1.0
      */
     public Bezeichner(final String name, final String technischerName) {
-        this.name = name;
-        this.technischerName = StringUtils.isEmpty(technischerName) ? toTechnischerName(name) : technischerName;
-        this.hash = this.technischerName.toUpperCase().hashCode();
+        super(name, technischerName);
     }
 
     /**
@@ -1473,112 +1468,6 @@ public final class Bezeichner {
         }
     }
 
-    private static String toTechnischerName(final String input) {
-        String techName = MAPPING.get(input);
-        if (techName != null) {
-            return techName;
-        }
-        StringBuilder buf = new StringBuilder();
-        String[] words = input.split(" ");
-        for (String word : words) {
-            buf.append(toShortcut(word));
-        }
-        return buf.toString();
-    }
-
-    private static String toShortcut(final String input) {
-        StringBuilder converted = new StringBuilder();
-        char[] chars = input.toCharArray();
-        for (char ch : chars) {
-            appendLetterOrDigitOrProzent(converted, ch);
-        }
-        String word = converted.toString();
-        switch (word) {
-            case "fuer":
-                return "";
-            case "Nummer":
-                return "Nr";
-            case "Gesamtbeitrag":
-                return "Gesbeitrag";
-            case "VN":
-                return "Vn";
-            case "VP":
-                return "Vp";
-            case "VS":
-                return "Vs";
-            case "Waehrungseinheiten":
-                return "WE";
-            default:
-                if ((word.length() == 3) && (word.toLowerCase().charAt(0) == 'd') && (word.charAt(2) != 'n')) {
-                    return "";
-                } else if (word.endsWith("datum")) {
-                    return word.substring(0, word.length() - 2);
-                } else if (word.toLowerCase().endsWith("versicherung")) {
-                    String versicherung = WordUtils.capitalize(word);
-                    return versicherung.substring(0, versicherung.length() - 12) + "Vers";
-                } else if (word.startsWith("eVB")) {
-                    return "eVB" + WordUtils.capitalize(word.substring(3));
-                } else if (word.startsWith("KFT")) {
-                    return "Kft" + WordUtils.capitalize(word.substring(3));
-                } else if (word.startsWith("KFV")) {
-                    return "Kfv" + WordUtils.capitalize(word.substring(3));
-                } else if (word.startsWith("KH")) {
-                    return "Kh" + WordUtils.capitalize(word.substring(2));
-                }
-                return WordUtils.capitalize(word);
-        }
-    }
-
-    private static void appendLetterOrDigitOrProzent(StringBuilder converted, char aChar) {
-        if (Character.isLetterOrDigit(aChar)) {
-            String s = UmlautMapper.replaceUmlaut(aChar);
-            converted.append(s);
-        } else if (aChar == '%') {
-            converted.append("Proz");
-        }
-    }
-
-    /**
-     * Liefert den Namen des Bezeichners.
-     *
-     * @return der Name
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Der technische Name leitet sich aus dem normalen Namen ab. Im
-     * Gegensatz zum normalen Namen enthaelt er aber keine Leerzeichen,
-     * Sonderzeichen oder Umlaute.
-     * <p>
-     * Der technische Name wird auch dazu verwendet, um zwei {@link Bezeichner}
-     * auf Gleichheit zu testen.
-     * </p>
-     *
-     * @return der technische Name
-     */
-    public String getTechnischerName() {
-        return this.technischerName;
-    }
-
-    /**
-     * Zum Vergleich zweier {@link Bezeichner} wird der technische Name
-     * herangezogen.
-     *
-     * @param obj der andere Bezeichner
-     * @return true, wenn er als gleich angesehen wird
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof Bezeichner)) {
-            return false;
-        }
-        Bezeichner other = (Bezeichner) obj;
-        return this.getTechnischerName().equalsIgnoreCase(other.getTechnischerName());
-    }
-
     /**
      * Manche Bezeichner wie "HaftungswertungssummeInWE" koennen eventuell
      * auch als Variante wie "HaftungswertungssummeInWE1" (also mit
@@ -1594,7 +1483,7 @@ public final class Bezeichner {
         vars.add(this);
         char lastchar = getName().charAt(getName().length()-1);
         if (getName().startsWith("Satzart")) {
-            vars.add(Bezeichner.of("Version " + name));
+            vars.add(Bezeichner.of("Version " + getName()));
         } else if (getName().startsWith("Version")) {
             vars.add(Bezeichner.of(getName().substring(7).trim()));
         } else if (lastchar == '1') {
@@ -1604,33 +1493,6 @@ public final class Bezeichner {
         return vars;
     }
 
-    /**
-     * Der Hash-Code wird aus dem technischen Namen abgeleitet.
-     * <p>
-     * Aus Performance-Gruenden wird der hash einmal beim Anlegen ermittelt,
-     * da der Bezeichner intern fuer diverse HashMaps verwendet wird.
-     * </p>
-     *
-     * @return den berechneten Hash-Code
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        return this.hash;
-    }
-
-    /**
-     * Da der Bezeichner als Ersatz fuer die String-Klasse eingesetzt werden soll,
-     * liefern wir den Namen hier zurueck.
-     *
-     * @return den Namen
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return this.getTechnischerName();
-    }
-    
     /**
      * Verwendet den uebergebenen Bezeichner, um den technischen Namen zu
      * aktualisieren.
