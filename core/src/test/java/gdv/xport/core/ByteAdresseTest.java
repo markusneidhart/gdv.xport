@@ -1,6 +1,7 @@
 package gdv.xport.core;
 
 import org.junit.Test;
+import patterntesting.runtime.junit.ObjectTester;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,6 +35,11 @@ public final class ByteAdresseTest {
     @Test
     public void testToString() {
         assertEquals("222", ByteAdresse.of(222).toString());
+    }
+
+    @Test
+    public void testEquals() {
+        ObjectTester.assertEquals(ByteAdresse.of(42), ByteAdresse.of(42));
     }
 
 }

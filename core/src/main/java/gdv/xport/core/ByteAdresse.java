@@ -67,6 +67,20 @@ public class ByteAdresse extends Number implements Fachwert {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ByteAdresse)) {
+            return false;
+        }
+        ByteAdresse other = (ByteAdresse) obj;
+        return adresse == other.adresse;
+    }
+
+    @Override
+    public int hashCode() {
+        return intValue();
+    }
+
+    @Override
     public String toString() {
         return Integer.toString(intValue());
     }
