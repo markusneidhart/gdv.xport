@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+
 /**
  * Die GdvFeld-Klasse ist repraesentiert ein Feld im Datensatz.
  * Sie wurde mit v5 aus der Feld-Klasse im lib-Modul herausgezogen.
@@ -47,7 +49,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
         this.bezeichner = name;
         this.byteAdresse = byteAdresse;
         this.inhalt = new char[length];
-        resetInhalt();
+        Arrays.fill(this.inhalt, ' ');
     }
 
     /**
@@ -158,10 +160,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      * Reset inhalt.
      */
     public void resetInhalt() {
-        int anzahlBytes = this.getAnzahlBytes();
-        for (int i = 0; i < anzahlBytes; i++) {
-            this.inhalt[i] = ' ';
-        }
+        Arrays.fill(this.inhalt, ' ');
     }
 
     /**
@@ -169,7 +168,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      *
      * @return the anzahl bytes
      */
-    public final int getAnzahlBytes() {
+    public int getAnzahlBytes() {
         return this.inhalt.length;
     }
 
@@ -178,7 +177,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      *
      * @return Byte-Adresse, beginnend bei 1
      */
-    public final int getByteAdresse() {
+    public int getByteAdresse() {
         return this.byteAdresse.intValue();
     }
 
@@ -187,7 +186,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      *
      * @return absolute End-Adresse
      */
-    public final int getEndAdresse() {
+    public int getEndAdresse() {
         return this.getByteAdresse() + this.getAnzahlBytes() - 1;
     }
 
@@ -250,7 +249,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      * @see Object#equals(Object)
      */
     @Override
-    public final boolean equals(final Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof GdvFeld)) {
             return false;
         }
@@ -265,7 +264,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this.getInhalt().hashCode();
     }
 
@@ -277,7 +276,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      * @return 0 wenn beide Felder die gleiche Startadresse haben
      */
     @Override
-    public final int compareTo(final GdvFeld other) {
+    public int compareTo(final GdvFeld other) {
         return this.getByteAdresse() - other.getByteAdresse();
     }
 

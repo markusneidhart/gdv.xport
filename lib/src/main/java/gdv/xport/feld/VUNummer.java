@@ -48,7 +48,6 @@ public class VUNummer extends AlphaNumFeld {
         this();
         assert nr.length() <= 5 : "nur max. 5 Stellen erlaubt";
         this.setInhalt(nr);
-        super.setAnzahlBytes(5);
     }
 
     /**

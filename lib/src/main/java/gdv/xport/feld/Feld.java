@@ -20,11 +20,13 @@ package gdv.xport.feld;
 
 import gdv.xport.annotation.FeldInfo;
 import gdv.xport.config.Config;
+import gdv.xport.core.ByteAdresse;
+import gdv.xport.core.GdvBezeichner;
+import gdv.xport.core.GdvFeld;
 import gdv.xport.satz.feld.FeldX;
 import gdv.xport.util.SimpleConstraintViolation;
 import net.sf.oval.ConstraintViolation;
 import net.sf.oval.Validator;
-import net.sf.oval.constraint.Min;
 import net.sf.oval.constraint.NotEqual;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -46,17 +48,11 @@ import java.util.List;
  * @author oliver
  * @since 04.10.2009
  */
-public class Feld implements Comparable<Feld>, Cloneable {
+public class Feld extends GdvFeld implements Cloneable {
 
-    private static final Logger LOG = LogManager.getLogger(Feld.class);
+    private static final Logger LOG = LogManager.getLogger();
     /** statt "null". */
     public static final Feld NULL_FELD = new Feld();
-    /** optional: Name des Felds. */
-    private final Bezeichner bezeichner;
-    private final StringBuilder inhalt;
-    /** Achtung - die ByteAdresse beginnt bei 1 und geht bis 256. */
-    @Min(1)
-    private final int byteAdresse;
     /** Ausrichtung: rechts- oder linksbuendig. */
     @NotEqual("UNKNOWN")
     private final Align ausrichtung;
@@ -91,13 +87,8 @@ public class Feld implements Comparable<Feld>, Cloneable {
      * @since 0.6
      */
     public Feld(final Enum feldX, final FeldInfo info) {
-        this.bezeichner = Feld.getAsBezeichner(feldX);
-        this.byteAdresse = info.byteAdresse();
+        super(Feld.getAsBezeichner(feldX), ByteAdresse.of(info.byteAdresse()), info.anzahlBytes());
         this.ausrichtung = getAlignmentFrom(info);
-        this.inhalt = new StringBuilder(info.anzahlBytes());
-        for (int i = 0; i < info.anzahlBytes(); i++) {
-            this.inhalt.append(' ');
-        }
         this.setInhalt(info.value());
     }
 
@@ -124,9 +115,7 @@ public class Feld implements Comparable<Feld>, Cloneable {
      * @param alignment the alignment
      */
     public Feld(final Bezeichner name, final int start, final String s, final Align alignment) {
-        this.bezeichner = name;
-        this.inhalt = new StringBuilder(s);
-        this.byteAdresse = start;
+        super(name, ByteAdresse.of(start), s);
         this.ausrichtung = alignment;
     }
 
@@ -140,9 +129,7 @@ public class Feld implements Comparable<Feld>, Cloneable {
      * @since 1.0
      */
     public Feld(final Bezeichner bezeichner, final int length, final int start, final Align alignment) {
-        this.bezeichner = bezeichner;
-        this.inhalt = getEmptyStringBuilder(length);
-        this.byteAdresse = start;
+        super(bezeichner, ByteAdresse.of(start), length);
         this.ausrichtung = alignment;
     }
 
@@ -209,10 +196,8 @@ public class Feld implements Comparable<Feld>, Cloneable {
      *            the alignment
      */
     public Feld(final int start, final String s, final Align alignment) {
-        this.inhalt = new StringBuilder(s);
-        this.byteAdresse = start;
+        super(createBezeichner(), ByteAdresse.of(start), s);
         this.ausrichtung = alignment;
-        this.bezeichner = createBezeichner();
     }
 
     /**
@@ -238,10 +223,8 @@ public class Feld implements Comparable<Feld>, Cloneable {
      *            the alignment
      */
     public Feld(final int length, final int start, final Align alignment) {
-        this.inhalt = getEmptyStringBuilder(length);
-        this.byteAdresse = start;
+        super(createBezeichner(), ByteAdresse.of(start), length);
         this.ausrichtung = alignment;
-        this.bezeichner = createBezeichner();
     }
 
     /**
@@ -253,14 +236,6 @@ public class Feld implements Comparable<Feld>, Cloneable {
     public Feld(final Feld other) {
         this(other.getBezeichner(), other.getAnzahlBytes(), other.getByteAdresse(), other.ausrichtung);
         this.setInhalt(other.getInhalt());
-    }
-
-    private static StringBuilder getEmptyStringBuilder(final int length) {
-        StringBuilder sbuf = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sbuf.append(' ');
-        }
-        return sbuf;
     }
 
     /**
@@ -279,8 +254,8 @@ public class Feld implements Comparable<Feld>, Cloneable {
         return info.align();
     }
 
-    private Bezeichner createBezeichner() {
-        return new Bezeichner(this.getClass().getSimpleName() + "@" + Integer.toHexString(this.hashCode()));
+    private static Bezeichner createBezeichner() {
+        return new Bezeichner("Feld@" + Long.toHexString(System.currentTimeMillis()));
     }
 
     /**
@@ -310,27 +285,18 @@ public class Feld implements Comparable<Feld>, Cloneable {
     }
 
     /**
-     * Gets the bezeichnung.
-     *
-     * @return the bezeichnung
-     */
-    public String getBezeichnung() {
-        return this.bezeichner.getName();
-    }
-
-    /**
      * Liefert den Bezeichner eines Feldes zurueck.
-     * <p>
-     * Vor 1.0 lieferte diese Methode einen "String" zurueck. Aus
-     * Konsistenz-Gruenden wurde die alte Implementierung in
-     * "GetBzeichnerAsString" umbenannt.
-     * </p>
      *
      * @return den Bezeichner des Feldes
      * @since 1.0
      */
+    @Override
     public Bezeichner getBezeichner() {
-        return this.bezeichner;
+        return toBezeichner(super.getBezeichner());
+    }
+
+    private static Bezeichner toBezeichner(GdvBezeichner x) {
+        return new Bezeichner(x.getName(), x.getTechnischerName());
     }
 
     /**
@@ -348,58 +314,16 @@ public class Feld implements Comparable<Feld>, Cloneable {
         this.resetInhalt();
         switch (this.ausrichtung) {
             case LEFT:
-                this.inhalt.replace(0, s.length(), s);
+                super.setInhalt(StringUtils.overlay(getInhalt(), s, 0, s.length()));
                 break;
             case RIGHT:
                 int l = s.length();
                 int start = anzahlBytes - l;
-                this.inhalt.replace(start, start + l, s);
+                super.setInhalt(StringUtils.overlay(getInhalt(), s, start, anzahlBytes));
                 break;
             default:
                 throw new IllegalStateException("object was not properly initialized");
         }
-    }
-
-    /**
-     * Sets the inhalt.
-     *
-     * @param n
-     *            the new inhalt
-     */
-    public void setInhalt(final int n) {
-        this.setInhalt(Integer.toString(n));
-    }
-
-    /**
-     * Sets the inhalt.
-     *
-     * @param c
-     *            the new inhalt
-     */
-    public void setInhalt(final char c) {
-        this.resetInhalt();
-        this.setInhalt(c, 0);
-    }
-
-    /**
-     * Sets the inhalt.
-     *
-     * @param c
-     *            zu setzendes Zeichen
-     * @param i
-     *            index, beginnend bei 0
-     */
-    public void setInhalt(final char c, final int i) {
-        this.inhalt.setCharAt(i, c);
-    }
-
-    /**
-     * Gets the inhalt.
-     *
-     * @return the inhalt
-     */
-    public String getInhalt() {
-        return this.inhalt.toString();
     }
 
     /**
@@ -415,106 +339,14 @@ public class Feld implements Comparable<Feld>, Cloneable {
     }
 
     /**
-     * Reset inhalt.
-     */
-    public void resetInhalt() {
-        int anzahlBytes = this.getAnzahlBytes();
-        for (int i = 0; i < anzahlBytes; i++) {
-            this.inhalt.setCharAt(i, ' ');
-        }
-    }
-
-    /**
-     * Wenn sich das Feld vergroessert, werden rechts Leerzeichen aufgefuellt (alphanumerische Zeichen sind
-     * standardmaessig linksbuendig).
-     *
-     * @param n
-     *            neue Groesse
-     */
-    public void setAnzahlBytes(final int n) {
-        assert this.inhalt.length() <= n : "drohender Datenverlust";
-        for (int i = this.inhalt.length(); i < n; i++) {
-            this.inhalt.append(' ');
-        }
-    }
-
-    /**
-     * Gets the anzahl bytes.
-     *
-     * @return the anzahl bytes
-     */
-    public final int getAnzahlBytes() {
-        return this.inhalt.length();
-    }
-
-    /**
-     * Gets the byte adresse.
-     *
-     * @return Byte-Adresse, beginnend bei 1
-     */
-    public final int getByteAdresse() {
-        return this.byteAdresse;
-    }
-
-    /**
-     * Gets the end adresse.
-     *
-     * @return absolute End-Adresse
-     */
-    public final int getEndAdresse() {
-        return this.byteAdresse + this.getAnzahlBytes() - 1;
-    }
-
-    /**
-     * Ueberprueft, ob sich zwei Felder mit unterschiedlichen Start-Adressen ueberlagern.
-     *
-     * @param other
-     *            das andere Feld
-     * @return true, falls sich die Felder ueberlappen
-     */
-    public final boolean overlapsWith(final Feld other) {
-        if (this.byteAdresse == other.byteAdresse) {
-            return false;
-        }
-        if (this.byteAdresse < other.byteAdresse) {
-            return this.getEndAdresse() >= other.byteAdresse;
-        }
-        return other.getEndAdresse() >= this.byteAdresse;
-    }
-
-    /**
      * Write.
      *
-     * @param writer
-     *            the writer
+     * @param writer the writer
      *
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public final void write(final Writer writer) throws IOException {
-        writer.write(this.inhalt.toString());
-    }
-
-    /**
-     * Checks if is empty.
-     *
-     * @return true, if is empty
-     */
-    public boolean isEmpty() {
-        return StringUtils.isBlank(this.getInhalt());
-    }
-
-    /**
-     * Dient zum Ermittel, ob ein Werte schon gesetzt wurde. Dabei werden
-     * typische Initialisierungswerte wie "0" als "nicht gesetzt"
-     * interpretiert.
-     *
-     * @return true, falls Feld mit einem Wert belegt ist
-     * @since 3.1
-     */
-    public boolean hasValue() {
-        String value = StringUtils.trimToEmpty(this.getInhalt());
-        return !value.isEmpty() && !value.equals("0");
+        writer.write(this.getInhalt());
     }
 
     /**
@@ -530,12 +362,6 @@ public class Feld implements Comparable<Feld>, Cloneable {
      * @since 0.1.0
      */
     public boolean isValid() {
-        if (this.getByteAdresse() < 1) {
-            return false;
-        }
-        if (this.getEndAdresse() > 256) {
-            return false;
-        }
         if (this.ausrichtung == Align.UNKNOWN) {
             return false;
         }
@@ -576,57 +402,6 @@ public class Feld implements Comparable<Feld>, Cloneable {
      */
     public String format() {
         return this.getInhalt();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " " + this.getBezeichner() + "(" + this.byteAdresse + "-"
-                + this.getEndAdresse() + "): \"" + this.getInhalt().trim() + "\"";
-    }
-
-    /**
-     * Zwei Felder sind gleich, wenn sie die gleiche Adresse und den gleichen
-     * Inhalt haben.
-     *
-     * @param obj das andere Feld
-     * @return true, wenn beide Felder gleich sind
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public final boolean equals(final Object obj) {
-        if (!(obj instanceof Feld)) {
-            return false;
-        }
-        Feld other = (Feld) obj;
-        return this.bezeichner.equals(other.bezeichner) && this.getInhalt().equals(other.getInhalt())
-                && (this.byteAdresse == other.byteAdresse) && this.ausrichtung == other.ausrichtung;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public final int hashCode() {
-        return this.byteAdresse + this.getInhalt().hashCode();
-    }
-
-    /**
-     * Es gilt fuer Feld a und b: a &lt; b, wenn die Start-Adresse von a vor b
-     * liegt.
-     *
-     * @param other das andere Feld
-     * @return 0 wenn beide Felder die gleiche Startadresse haben
-     */
-    @Override
-    public final int compareTo(final Feld other) {
-        return this.byteAdresse - other.byteAdresse;
     }
 
     /**
