@@ -22,9 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.Writer;
-
 /**
  * Die GdvFeld-Klasse ist repraesentiert ein Feld im Datensatz.
  * Sie wurde mit v5 aus der Feld-Klasse im lib-Modul herausgezogen.
@@ -62,7 +59,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      */
     public GdvFeld(GdvBezeichner name, ByteAdresse byteAdresse, String s) {
         this(name, byteAdresse, s.length());
-        setInhalt(s);
+        s.getChars(0, s.length(), this.inhalt, 0);
     }
 
     /**
@@ -98,7 +95,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      *
      * @param s der neue Inhalt
      */
-    public final void setInhalt(final String s) {
+    public void setInhalt(final String s) {
         int anzahlBytes = this.getAnzahlBytes();
         if (s.length() > anzahlBytes) {
             throw new IllegalArgumentException("Feld " + this.getBezeichner() + ": Parameter \"" + s
@@ -122,9 +119,19 @@ public class GdvFeld implements Comparable<GdvFeld> {
      *
      * @param c neuer Inhalt
      */
-    public void setInhalt(final char c) {
+    public void setInhalt(char c) {
         this.resetInhalt();
-        inhalt[0] = c;
+        this.setInhalt(c, 0);
+    }
+
+    /**
+     * Setzt ein Zeichen.
+     *
+     * @param c  zu setzendes Zeichen
+     * @param i index, beginnend bei 0
+     */
+    public void setInhalt(char c, int i) {
+        this.inhalt[i] = c;
     }
 
     /**
@@ -199,19 +206,6 @@ public class GdvFeld implements Comparable<GdvFeld> {
             return this.getEndAdresse() >= other.getByteAdresse();
         }
         return other.getEndAdresse() >= this.getByteAdresse();
-    }
-
-    /**
-     * Write.
-     *
-     * @param writer
-     *            the writer
-     *
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
-     */
-    public final void write(final Writer writer) throws IOException {
-        writer.write(this.getInhalt());
     }
 
     /**
