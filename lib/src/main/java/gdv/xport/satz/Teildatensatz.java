@@ -60,9 +60,14 @@ public class Teildatensatz extends Satz {
 
     /**
      * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart.
+     * <p>
+     * TODO: Wird mit v5.2 entfernt.
+     * </p>
      *
      * @param satzart z.B. 100
+     * @deprecated wird nicht mehr benoetigt
      */
+    @Deprecated
     public Teildatensatz(final NumFeld satzart) {
         super(satzart, 0);
         this.satznummer.setInhalt(' ');
@@ -72,39 +77,47 @@ public class Teildatensatz extends Satz {
     /**
      * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart und
      * Nummer.
+     * <p>
+     * TODO: Wird mit v6 entfernt.
+     * </p>
      *
      * @param satzart z.B. 1 (Vorsatz)
      * @param nr Nummer des Teildatensatzes (zwischen 1 und 9)
+     * @deprecated bitte {@link Teildatensatz#Teildatensatz(SatzTyp, int)} verwenden
      */
+    @Deprecated
     public Teildatensatz(final NumFeld satzart, final int nr) {
-        super(satzart, 0);
-        initSatznummer(nr);
+        this(SatzTyp.of(satzart.getInhalt()), nr);
     }
 
     /**
      * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart
      * und Nummer.
+     * <p>
+     * TODO: Wird mit v6 entfernt.
+     * </p>
      *
      * @param satzart z.B. 100
      * @param nr Nummer des Teildatensatzes (zwischen 1 und 9)
+     * @deprecated bitte {@link Teildatensatz#Teildatensatz(SatzTyp, int)} verwenden
      */
+    @Deprecated
     public Teildatensatz(final int satzart, final int nr) {
-        super(satzart, 0);
-        initSatznummer(nr);
+        this(SatzTyp.of(satzart), nr);
     }
 
-  /**
-   * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart und
-   * Nummer.
-   *
-   * @param satzTyp z.B. 0220.050
-   * @param nr Nummer des Teildatensatzes (zwischen 1 und 9)
-   */
-  public Teildatensatz(final SatzTyp satzTyp, final int nr)
-  {
-    this(satzTyp.getSatzart(), nr);
-    this.setGdvSatzartName(satzTyp.toString());
-  }
+    /**
+     * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart und
+     * Nummer.
+     *
+     * @param satzTyp z.B. 0220.050
+     * @param nr      Nummer des Teildatensatzes (zwischen 1 und 9)
+     */
+    public Teildatensatz(final SatzTyp satzTyp, final int nr) {
+        super(satzTyp, 0);
+        initSatznummer(nr);
+        this.setGdvSatzartName(satzTyp.toString());
+    }
 
     /**
      * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart, Nummer
