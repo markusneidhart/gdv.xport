@@ -20,8 +20,6 @@ package gdv.xport.core;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-
 /**
  * Der GdvSatzTyp fuehrt Satzart, Sparte, Wagnisart und laufende Nummer eines
  * Teildatensatz zusammen. Sie wird u.a. von der SatzFactory fuer die
@@ -62,7 +60,21 @@ public class GdvSatzTyp {
 	 * @return der entsprechende SatzTyp
 	 */
 	public GdvSatzTyp(String nr) {
-		this(toNumbers(nr));
+		this(toIntArray(nr));
+		//this(toNumbers(nr));
+	}
+
+	private static int[] toIntArray(String nr) {
+		String[] parts = StringUtils.split(nr, '.');
+		int[] array = new int[parts.length];
+		try {
+			for (int i = 0; i < parts.length; i++) {
+				array[i] = Integer.parseInt(parts[i]);
+			}
+			return array;
+		} catch (NumberFormatException ex)  {
+			throw new IllegalArgumentException("kein Satz-Typ: '" + nr + "'", ex);
+		}
 	}
 
 	public GdvSatzTyp(int... args) {
@@ -71,22 +83,6 @@ public class GdvSatzTyp {
 
 	private GdvSatzTyp(short[] n) {
 		this(n[0], n[1], n[2], n[3], n[4], n[5]);
-	}
-
-	private static short[] toNumbers (String nr)  {
-		return toNumbers(StringUtils.split(nr, '.'));
-	}
-
-	private static short[] toNumbers (String[] parts)  {
-		int[] numbers = { -1, -1, -1, -1, -1, -1 };
-		try {
-			for (int i = 0; i < parts.length; i++) {
-				numbers[i] = Short.parseShort(parts[i]);
-			}
-			return toNumbers(numbers);
-		} catch (NumberFormatException ex)  {
-			throw new IllegalArgumentException("kein Satz-Typ: " + Arrays.toString(parts), ex);
-		}
 	}
 
 	private static short[] toNumbers (int[] parts)  {
