@@ -34,8 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GdvSatzTyp {
 
-	/** The satzart. */
-	private final int satzart;
+	private short[] n;
 
 	/** The sparte. */
 	private final int sparte;
@@ -61,7 +60,6 @@ public class GdvSatzTyp {
 	 */
 	public GdvSatzTyp(String nr) {
 		this(toIntArray(nr));
-		//this(toNumbers(nr));
 	}
 
 	private static int[] toIntArray(String nr) {
@@ -79,6 +77,10 @@ public class GdvSatzTyp {
 
 	public GdvSatzTyp(int... args) {
 		this(toNumbers(args));
+		this.n = new short[args.length];
+		for (int i = 0; i < args.length; i++) {
+			n[i] = (short) args[i];
+		}
 	}
 
 	private GdvSatzTyp(short[] n) {
@@ -134,7 +136,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.satzart = satzart;
 		this.sparte = ((satzart == 210 ) || (satzart == 211 ) || (satzart == 220 )) && (sparte < 0) ? 0 : sparte;
 		this.wagnisart = ((satzart == 220) && (sparte == 10) && (wagnisart < 0)) ? 0 : wagnisart;
 		this.krankenFolgeNr = krankenFolgeNr;
@@ -148,7 +149,7 @@ public class GdvSatzTyp {
 	 * @return the satzart
 	 */
 	public int getSatzart() {
-		return this.satzart;
+		return n[0];
 	}
 
 	/**
