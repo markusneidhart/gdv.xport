@@ -64,7 +64,7 @@ public class GdvSatzTypTest {
     }
 
     @Test
-    public void testOf() {
+    public void testCtors() {
         assertEquals(new GdvSatzTyp("0001"), new GdvSatzTyp(1));
         assertEquals(new GdvSatzTyp("0210.050"), new GdvSatzTyp(210, 50));
         assertEquals(new GdvSatzTyp("0220.010.0"), new GdvSatzTyp(220, 10, 0));

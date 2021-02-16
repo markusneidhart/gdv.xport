@@ -60,7 +60,6 @@ public class GdvSatzTyp {
 	 *
 	 * @param nr z.B. "0210.050"
 	 * @return der entsprechende SatzTyp
-	 * @since 5.0
 	 */
 	public GdvSatzTyp(String nr) {
 		this(toNumbers(nr));
@@ -114,57 +113,6 @@ public class GdvSatzTyp {
 		}
 		return numbers;
 	}
-
-	/**
-     * Instantiates a new satz nummer.
-     *
-     * @param satzart the satzart
-     */
-    public GdvSatzTyp(final int satzart) {
-      this(satzart, -1);
-    }
-
-    /**
-     * Instantiates a new satz nummer.
-     *
-     * @param satzart Satzart
-     * @param sparte Sparte
-     */
-    public GdvSatzTyp(final int satzart, final int sparte) {
-      this(satzart, sparte, -1);
-    }
-
-    /**
-     * Instantiiert einen neuen SatzTyp.
-	 * TODO: wird mit v6 entfernt werden
-     *
-     * @param satzart the satzart
-     * @param sparte the sparte
-     * @param artFolgeNr Wagnisart (Sparte 10) bzw. krankenFolgeNr (Sparte 20)
-     *          bzw. bausparenArt (Sparte 580, Satzart 220 (Wert 1 - 2))
-     */
-    protected GdvSatzTyp(final int satzart, final int sparte, final int artFolgeNr) {
-      this(satzart, sparte, artFolgeNr, -1);
-    }
-
-    /**
-     * Legt eine neuen SatzTyp an.
-	 * TODO: Wird ab v6 nicht mehr zur Verfuegung stehen.
-     *
-     * @param satzart die Satzart (vierstellig)
-     * @param sparte die Sparte (dreistellig)
-	 * @param artFolgeNr Wagnisart (Sparte 10) bzw. krankenFolgeNr (Sparte 20) bzw. bausparenArt (Sparte 580, Satzart 220 (Wert 1 - 2))
-     * @param lfdNummer die laufende Nummer (Teildatensatz-Nummer)
-     */
-	private GdvSatzTyp(final int satzart, final int sparte, final int artFolgeNr, final int lfdNummer) {
-		this((short) satzart, (short) sparte, (sparte == 20) || (sparte == 580) ? (short) -1 : (short) artFolgeNr,
-				(sparte == 20) ? (short) artFolgeNr : (short) -1, (short) lfdNummer,
-				(sparte == 580) ? (short) artFolgeNr : (short) -1);
-	}
-
-    private GdvSatzTyp(final int satzart, final int sparte, final int wagnisart, final int krankenFolgeNr, final int lfdNummer) {
-      this((short) satzart, (short) sparte, (short) wagnisart, (short) krankenFolgeNr, (short) lfdNummer, (short) -1);
-    }
 
 	/**
 	 * Legt eine neue SatzNummer an.
