@@ -20,6 +20,8 @@ package gdv.xport.core;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+
 /**
  * Der GdvSatzTyp fuehrt Satzart, Sparte, Wagnisart und laufende Nummer eines
  * Teildatensatz zusammen. Sie wird u.a. von der SatzFactory fuer die
@@ -64,38 +66,53 @@ public class GdvSatzTyp {
 		this(toNumbers(nr));
 	}
 
-	private GdvSatzTyp(int[] n) {
+	public GdvSatzTyp(int... args) {
+		this(toNumbers(args));
+	}
+
+	private GdvSatzTyp(short[] n) {
 		this(n[0], n[1], n[2], n[3], n[4], n[5]);
 	}
 
-	private static int[] toNumbers (String nr)  {
+	private static short[] toNumbers (String nr)  {
+		return toNumbers(StringUtils.split(nr, '.'));
+	}
+
+	private static short[] toNumbers (String[] parts)  {
 		int[] numbers = { -1, -1, -1, -1, -1, -1 };
 		try {
-			String[] parts = StringUtils.split(nr, '.');
 			for (int i = 0; i < parts.length; i++) {
-				numbers[i] = Integer.parseInt(parts[i]);
+				numbers[i] = Short.parseShort(parts[i]);
 			}
-			if (numbers[1] == 20) {
-				// bei Kranken muss krankenFolgeNr belegt werden
-				numbers[3] = numbers[2];
-				numbers[2] = -1;
-				numbers[4] = -1;
-				numbers[5] = -1;
-			} else if (numbers[1] == 580) {
-				// bei Bausparen muss bausparenArt belegt werden
-				numbers[5] = numbers[2];
-				numbers[2] = -1;
-				numbers[3] = -1;
-				numbers[4] = -1;
-			} else {
-				numbers[4] = numbers[3];
-				numbers[3] = -1;
-				numbers[5] = -1;
-			}
-			return numbers;
+			return toNumbers(numbers);
 		} catch (NumberFormatException ex)  {
-			throw new IllegalArgumentException("kein Satz-Typ: '" + nr + "'", ex);
+			throw new IllegalArgumentException("kein Satz-Typ: " + Arrays.toString(parts), ex);
 		}
+	}
+
+	private static short[] toNumbers (int[] parts)  {
+		short[] numbers = { -1, -1, -1, -1, -1, -1 };
+		for (int i = 0; i < parts.length; i++) {
+			numbers[i] = (short) parts[i];
+		}
+		if (numbers[1] == 20) {
+			// bei Kranken muss krankenFolgeNr belegt werden
+			numbers[3] = numbers[2];
+			numbers[2] = -1;
+			numbers[4] = -1;
+			numbers[5] = -1;
+		} else if (numbers[1] == 580) {
+			// bei Bausparen muss bausparenArt belegt werden
+			numbers[5] = numbers[2];
+			numbers[2] = -1;
+			numbers[3] = -1;
+			numbers[4] = -1;
+		} else {
+			numbers[4] = numbers[3];
+			numbers[3] = -1;
+			numbers[5] = -1;
+		}
+		return numbers;
 	}
 
 	/**
@@ -139,23 +156,14 @@ public class GdvSatzTyp {
 	 * @param artFolgeNr Wagnisart (Sparte 10) bzw. krankenFolgeNr (Sparte 20) bzw. bausparenArt (Sparte 580, Satzart 220 (Wert 1 - 2))
      * @param lfdNummer die laufende Nummer (Teildatensatz-Nummer)
      */
-	protected GdvSatzTyp(final int satzart, final int sparte, final int artFolgeNr, final int lfdNummer) {
-		this(satzart, sparte, (sparte == 20) || (sparte == 580) ? -1 : artFolgeNr, (sparte == 20) ? artFolgeNr : -1,
-				lfdNummer, (sparte == 580) ? artFolgeNr : -1);
+	private GdvSatzTyp(final int satzart, final int sparte, final int artFolgeNr, final int lfdNummer) {
+		this((short) satzart, (short) sparte, (sparte == 20) || (sparte == 580) ? (short) -1 : (short) artFolgeNr,
+				(sparte == 20) ? (short) artFolgeNr : (short) -1, (short) lfdNummer,
+				(sparte == 580) ? (short) artFolgeNr : (short) -1);
 	}
 
-    /**
-     * Legt eine neue SatzNummer an.
-	 * TODO: Wird ab v6 nicht mehr zur Verfuegung stehen.
-     *
-     * @param satzart die Satzart (vierstellig)
-     * @param sparte die Sparte (dreistellig)
-     * @param wagnisart die Wagnisart (ein- bis zweisstellig)
-     * @param krankenFolgeNr Folge-Nr. aus Sparte 20, Satzart 220 (Wert 1-3)
-     * @param lfdNummer die laufende Nummer (Teildatensatz-Nummer)
-     */
-    protected GdvSatzTyp(final int satzart, final int sparte, final int wagnisart, final int krankenFolgeNr, final int lfdNummer) {
-      this(satzart, sparte, wagnisart, krankenFolgeNr, lfdNummer, -1);
+    private GdvSatzTyp(final int satzart, final int sparte, final int wagnisart, final int krankenFolgeNr, final int lfdNummer) {
+      this((short) satzart, (short) sparte, (short) wagnisart, (short) krankenFolgeNr, (short) lfdNummer, (short) -1);
     }
 
 	/**
@@ -169,7 +177,7 @@ public class GdvSatzTyp {
 	 * @param bausparenArt die Art bei Sparte 580, Satzart 220 (Wert 1 - 2)
 	 * @since 4.X
 	 */
-	private GdvSatzTyp(final int satzart, final int sparte, final int wagnisart, final int krankenFolgeNr, final int lfdNummer, final int bausparenArt) {
+	private GdvSatzTyp(short satzart, short sparte, short wagnisart, short krankenFolgeNr, short lfdNummer, short bausparenArt) {
 		assert (satzart >= 0) && (satzart <= 9999) : "Satzart " + satzart
 		        + " muss zwischen 0 und 9999 liegen";
 		assert (sparte == -1) || ((0 <= sparte) && (sparte <= 999)) : "Sparte " + sparte
