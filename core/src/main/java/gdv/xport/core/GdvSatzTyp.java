@@ -18,6 +18,7 @@
 
 package gdv.xport.core;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -35,9 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 public class GdvSatzTyp {
 
 	private short[] n;
-
-	/** The wagnisart. */
-	private final int wagnisart;
 
 	/** Kranken, Folgenummer */
 	private final int krankenFolgeNr;
@@ -84,9 +82,10 @@ public class GdvSatzTyp {
 		}
 		int satzart = array[0];
 		if (((satzart == 210 ) || (satzart == 211 ) || (satzart == 220 )) && (args.length < 2)) {
-			array = new short[args.length + 1];
-			array[0] = (short) args[0];
-			array[1] = 0;
+			array = ArrayUtils.add(array, (short) 0);
+		}
+		if ((array.length == 2) && (satzart == 220) && (array[1] == 10)) {
+			array = ArrayUtils.add(array, (short) 0);
 		}
 		return array;
 	}
@@ -144,7 +143,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.wagnisart = ((satzart == 220) && (sparte == 10) && (wagnisart < 0)) ? 0 : wagnisart;
 		this.krankenFolgeNr = krankenFolgeNr;
 		this.teildatensatzNummer = ((wagnisart > 0) && (lfdNummer < 0) && (sparte == 10)) ? 1 :  lfdNummer;
 		this.bausparenArt = bausparenArt;
@@ -168,25 +166,14 @@ public class GdvSatzTyp {
 		return n[1];
 	}
 
-  /**
-   * Liefert die Sparte als String.
-   *
-   * @return z.B. "030"
-   * @since 5.0
-   */
-  public String getSparteAsString()
-  {
-    return Integer.toString(this.getSparte());
-  }
-
-  /**
-   * Gets the wagnisart.
-   *
-   * @return the wagnisart
-   */
-  public int getWagnisart()   {
-    return this.wagnisart;
-  }
+	/**
+	 * Gets the wagnisart.
+	 *
+	 * @return the wagnisart
+	 */
+	public int getWagnisart() {
+		return n[2];
+	}
 
 	/**
 	 * Liefert die Wagnisart als String.
@@ -216,7 +203,6 @@ public class GdvSatzTyp {
 	 * "0220.580.01" und "0220.580.2" Sinn.
 	 *
 	 * @return z.B. "01" bei SatzTyp "0220.580.01"
-	 * @since 5.0
 	 */
 	public String getBausparenArtAsString() {
 		if (this.getBausparenArt() < 0) {
@@ -235,7 +221,6 @@ public class GdvSatzTyp {
 	 * SatzTyp.of("0220.010.0").
 	 *
 	 * @return z.B. 1 bei SatzTyp "0220.580.01"
-	 * @since 5.0
 	 */
 	public int getArt() {
 		if (this.getSparte() == 10) {
@@ -263,7 +248,6 @@ public class GdvSatzTyp {
 	 * "0" bei SatzTyp.of("0220.010.0").
 	 *
 	 * @return z.B. "01" bei SatzTyp "0220.580.01"
-	 * @since 5.0
 	 */
 	public String getArtAsString() {
 		if (this.getBausparenArt() == 1) {
@@ -279,10 +263,9 @@ public class GdvSatzTyp {
 	 * der Fall.
 	 *
 	 * @return true oder false
-	 * @since 5.0
 	 */
 	public boolean hasArt() {
-		return (this.getWagnisart() >= 0) || (this.getBausparenArt() >= 0) || (this.getKrankenFolgeNr() >= 0);
+		return (this.hasWagnisart()) || (this.getBausparenArt() >= 0) || (this.getKrankenFolgeNr() >= 0);
 	}
 	
 	/**
@@ -318,7 +301,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasWagnisart() {
-		return this.getWagnisart() >= 0;
+		return n.length > 2 && n[2] >= 0;
 	}
 	
 	/**
