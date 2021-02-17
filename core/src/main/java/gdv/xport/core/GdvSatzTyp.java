@@ -36,9 +36,6 @@ public class GdvSatzTyp {
 
 	private short[] n;
 
-	/** The sparte. */
-	private final int sparte;
-
 	/** The wagnisart. */
 	private final int wagnisart;
 
@@ -77,10 +74,21 @@ public class GdvSatzTyp {
 
 	public GdvSatzTyp(int... args) {
 		this(toNumbers(args));
-		this.n = new short[args.length];
+		this.n = createArray(args);
+	}
+
+	private static short[] createArray(int[] args) {
+		short[] array = new short[args.length];
 		for (int i = 0; i < args.length; i++) {
-			n[i] = (short) args[i];
+			array[i] = (short) args[i];
 		}
+		int satzart = array[0];
+		if (((satzart == 210 ) || (satzart == 211 ) || (satzart == 220 )) && (args.length < 2)) {
+			array = new short[args.length + 1];
+			array[0] = (short) args[0];
+			array[1] = 0;
+		}
+		return array;
 	}
 
 	private GdvSatzTyp(short[] n) {
@@ -136,7 +144,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.sparte = ((satzart == 210 ) || (satzart == 211 ) || (satzart == 220 )) && (sparte < 0) ? 0 : sparte;
 		this.wagnisart = ((satzart == 220) && (sparte == 10) && (wagnisart < 0)) ? 0 : wagnisart;
 		this.krankenFolgeNr = krankenFolgeNr;
 		this.teildatensatzNummer = ((wagnisart > 0) && (lfdNummer < 0) && (sparte == 10)) ? 1 :  lfdNummer;
@@ -158,7 +165,7 @@ public class GdvSatzTyp {
 	 * @return the sparte
 	 */
 	public int getSparte() {
-		return this.sparte;
+		return n[1];
 	}
 
   /**
@@ -302,7 +309,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasSparte() {
-		return this.getSparte() > 0;
+		return n.length > 1 && n[1] > 0;
 	}
 
 	/**
