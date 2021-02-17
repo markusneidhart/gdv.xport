@@ -223,7 +223,7 @@ public class GdvSatzTypTest {
     }
 
     @Test
-    public void testOfKrankenFolgeNr() {
+    public void testKrankenFolgeNr() {
         assertEquals(new GdvSatzTyp(220, 20, 1), new GdvSatzTyp("0220.020.1"));
         assertEquals(new GdvSatzTyp(220, 20, 2), new GdvSatzTyp("0220.020.2"));
         assertEquals(new GdvSatzTyp(220, 20, 3), new GdvSatzTyp("0220.020.3"));

@@ -37,9 +37,6 @@ public class GdvSatzTyp {
 
 	private short[] n;
 
-	/** Kranken, Folgenummer */
-	private final int krankenFolgeNr;
-
 	/** The lfd nummer. */
 	private final int teildatensatzNummer;
 
@@ -143,7 +140,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.krankenFolgeNr = krankenFolgeNr;
 		this.teildatensatzNummer = ((wagnisart > 0) && (lfdNummer < 0) && (sparte == 10)) ? 1 :  lfdNummer;
 		this.bausparenArt = bausparenArt;
 	}
@@ -265,7 +261,7 @@ public class GdvSatzTyp {
 	 * @return true oder false
 	 */
 	public boolean hasArt() {
-		return (this.hasWagnisart()) || (this.getBausparenArt() >= 0) || (this.getKrankenFolgeNr() >= 0);
+		return (this.hasWagnisart()) || (this.getBausparenArt() >= 0) || (this.hasKrankenFolgeNr());
 	}
 	
 	/**
@@ -274,7 +270,7 @@ public class GdvSatzTyp {
 	 * @return the krankenFolgeNr
 	 */
 	public int getKrankenFolgeNr() {
-	    return this.krankenFolgeNr;
+		return n[2];
 	}
 
 	/**
@@ -310,7 +306,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasKrankenFolgeNr() {
-	    return this.getKrankenFolgeNr() >= 0;
+		return n.length > 2 && n[2] >= 0 && getSparte() == 20;
 	}
 
     /**
