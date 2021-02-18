@@ -92,7 +92,7 @@ public class GdvSatzTypTest {
      * eigentlich GdvSatzTyp "0220.010.13.1" gemeint.
      */
     @Test
-    public void tesetOfWagnisartLeben() {
+    public void testOfWagnisartLeben() {
         assertEquals(new GdvSatzTyp("0220.010.13.1"), new GdvSatzTyp("0220.010.13"));
     }
 

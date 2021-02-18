@@ -37,9 +37,6 @@ public class GdvSatzTyp {
 
 	private short[] n;
 
-	/** The lfd nummer. */
-	private final int teildatensatzNummer;
-
 	/** Bausparen, bausparenArt */
 	private final int bausparenArt;
 
@@ -83,6 +80,9 @@ public class GdvSatzTyp {
 		}
 		if ((array.length == 2) && (satzart == 220) && (array[1] == 10)) {
 			array = ArrayUtils.add(array, (short) 0);
+		}
+		if ((array.length == 3) && (array[1] == 10) && (array[2] > 0)) {
+			array = ArrayUtils.add(array, (short) 1);
 		}
 		return array;
 	}
@@ -140,7 +140,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.teildatensatzNummer = ((wagnisart > 0) && (lfdNummer < 0) && (sparte == 10)) ? 1 :  lfdNummer;
 		this.bausparenArt = bausparenArt;
 	}
 
@@ -279,7 +278,8 @@ public class GdvSatzTyp {
 	 * @return the lfd nummer
 	 */
 	public int getTeildatensatzNummer() {
-		return this.teildatensatzNummer;
+		//return this.teildatensatzNummer;
+		return n.length > 3 ? n[3] : 0;
 	}
 
 	/**
@@ -320,15 +320,16 @@ public class GdvSatzTyp {
       return this.getBausparenArt() >= 0;
     }
 
-    /**
-     * Liefert true zurueck, wenn die laufende Nummer (fuer Wagnisart) gesetzt
-     * ist.
-     *
-     * @return true, if successful
-     */
-    public boolean hasTeildatensatzNummer()  {
-      return this.getTeildatensatzNummer() >= 0;
-    }
+	/**
+	 * Liefert true zurueck, wenn die laufende Nummer (fuer Wagnisart) gesetzt
+	 * ist.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean hasTeildatensatzNummer() {
+		//return this.getTeildatensatzNummer() >= 0;
+		return n.length > 3;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -368,7 +369,7 @@ public class GdvSatzTyp {
 			if (this.hasArt()) {
 				buf.append(".");
 				buf.append(this.getArtAsString());
-				if (this.getTeildatensatzNummer() >= 0) {
+				if (this.hasTeildatensatzNummer()) {
 					buf.append(".");
 					buf.append(this.getTeildatensatzNummer());
 				}
