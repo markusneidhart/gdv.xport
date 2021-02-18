@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GdvSatzTyp {
 
-	private short[] n;
+	private final short[] teil;
 
 	/**
 	 * Damit laesst sich ein SatzTyp anhand der entsprechenden String-
@@ -60,9 +60,13 @@ public class GdvSatzTyp {
 		}
 	}
 
+	/**
+	 * Damit laesst sich ein SatzTyp anhand der Einzelteile zusammensetzen.
+	 *
+	 * @param args z.B. 0210, 050
+	 */
 	public GdvSatzTyp(int... args) {
-		this(toNumbers(args));
-		this.n = createArray(args);
+		this.teil = createArray(args);
 	}
 
 	private static short[] createArray(int[] args) {
@@ -83,68 +87,13 @@ public class GdvSatzTyp {
 		return array;
 	}
 
-	private GdvSatzTyp(short[] n) {
-		this(n[0], n[1], n[2], n[3], n[4], n[5]);
-	}
-
-	private static short[] toNumbers (int[] parts)  {
-		short[] numbers = { -1, -1, -1, -1, -1, -1 };
-		for (int i = 0; i < parts.length; i++) {
-			numbers[i] = (short) parts[i];
-		}
-		if (numbers[1] == 20) {
-			// bei Kranken muss krankenFolgeNr belegt werden
-			numbers[3] = numbers[2];
-			numbers[2] = -1;
-			numbers[4] = -1;
-			numbers[5] = -1;
-		} else if (numbers[1] == 580) {
-			// bei Bausparen muss bausparenArt belegt werden
-			numbers[5] = numbers[2];
-			numbers[2] = -1;
-			numbers[3] = -1;
-			numbers[4] = -1;
-		} else {
-			numbers[4] = numbers[3];
-			numbers[3] = -1;
-			numbers[5] = -1;
-		}
-		return numbers;
-	}
-
-	/**
-	 * Legt eine neue SatzNummer an.
-	 *
-	 * @param satzart die Satzart (vierstellig)
-	 * @param sparte die Sparte (dreistellig)
-	 * @param wagnisart die Wagnisart (ein- bis zweisstellig)
-	 * @param krankenFolgeNr Folge-Nr. aus Sparte 20, Satzart 220 (Wert 1-3)
-	 * @param lfdNummer die laufende Nummer (Teildatensatz-Nummer)
-	 * @param bausparenArt die Art bei Sparte 580, Satzart 220 (Wert 1 - 2)
-	 * @since 4.X
-	 */
-	private GdvSatzTyp(short satzart, short sparte, short wagnisart, short krankenFolgeNr, short lfdNummer, short bausparenArt) {
-		assert (satzart >= 0) && (satzart <= 9999) : "Satzart " + satzart
-		        + " muss zwischen 0 und 9999 liegen";
-		assert (sparte == -1) || ((0 <= sparte) && (sparte <= 999)) : "Sparte " + sparte
-		        + " muss zwischen 0 und 999 liegen";
-		assert (wagnisart == -1) || ((0 <= wagnisart) && (wagnisart <= 9)) || (wagnisart == 13) || (wagnisart == 48) :
-				"Wagnisart " + wagnisart + " muss zwischen 0 und 9 liegen";
-		assert (krankenFolgeNr == -1) || ((1 <= krankenFolgeNr) && (krankenFolgeNr <= 3)) : "Kranken Folge-Nr. "
-		        + krankenFolgeNr + " muss zwischen 1 und 3 liegen";
-		assert (lfdNummer == -1) || ((0 <= lfdNummer) && (lfdNummer <= 9)) : "teildatensatzNummer "
-		        + lfdNummer + " muss zwischen 0 und 9 liegen";
-		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
-		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-	}
-
 	/**
 	 * Gets the satzart.
 	 *
 	 * @return the satzart
 	 */
 	public int getSatzart() {
-		return n[0];
+		return teil[0];
 	}
 
 	/**
@@ -153,7 +102,7 @@ public class GdvSatzTyp {
 	 * @return the sparte
 	 */
 	public int getSparte() {
-		return n[1];
+		return teil[1];
 	}
 
 	/**
@@ -162,7 +111,7 @@ public class GdvSatzTyp {
 	 * @return the wagnisart
 	 */
 	public int getWagnisart() {
-		return n[2];
+		return teil[2];
 	}
 
 	/**
@@ -181,11 +130,9 @@ public class GdvSatzTyp {
 	 * "0220.580.01" und "0220.580.2" Sinn.
 	 *
 	 * @return z.B. 1 bei SatzTyp "0220.580.01"
-	 * @since 5.0
 	 */
 	public int getBausparenArt() {
-		//return this.bausparenArt;
-		return n[2];
+		return teil[2];
 	}
 
 	/**
@@ -268,7 +215,7 @@ public class GdvSatzTyp {
 	 * @return the krankenFolgeNr
 	 */
 	public int getKrankenFolgeNr() {
-		return n[2];
+		return teil[2];
 	}
 
 	/**
@@ -277,8 +224,7 @@ public class GdvSatzTyp {
 	 * @return the lfd nummer
 	 */
 	public int getTeildatensatzNummer() {
-		//return this.teildatensatzNummer;
-		return n.length > 3 ? n[3] : 0;
+		return teil.length > 3 ? teil[3] : 0;
 	}
 
 	/**
@@ -287,7 +233,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasSparte() {
-		return n.length > 1 && n[1] > 0;
+		return teil.length > 1 && teil[1] > 0;
 	}
 
 	/**
@@ -296,7 +242,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasWagnisart() {
-		return n.length > 2 && n[2] >= 0;
+		return teil.length > 2 && teil[2] >= 0;
 	}
 	
 	/**
@@ -305,7 +251,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasKrankenFolgeNr() {
-		return n.length > 2 && n[2] >= 0 && getSparte() == 20;
+		return teil.length > 2 && teil[2] >= 0 && getSparte() == 20;
 	}
 
 	/**
@@ -325,7 +271,7 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasTeildatensatzNummer() {
-		return n.length > 3;
+		return teil.length > 3;
 	}
 
 	/*
