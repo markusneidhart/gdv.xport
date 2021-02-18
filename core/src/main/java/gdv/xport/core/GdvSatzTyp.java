@@ -18,8 +18,12 @@
 
 package gdv.xport.core;
 
+import de.jfachwert.pruefung.exception.LocalizedIllegalArgumentException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.validation.ValidationException;
+import java.util.Arrays;
 
 /**
  * Der GdvSatzTyp fuehrt Satzart, Sparte, Wagnisart und laufende Nummer eines
@@ -35,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GdvSatzTyp {
 
+	private static final Validator VALIDATOR = new Validator();
 	private final short[] teil;
 
 	/**
@@ -66,7 +71,7 @@ public class GdvSatzTyp {
 	 * @param args z.B. 0210, 050
 	 */
 	public GdvSatzTyp(int... args) {
-		this.teil = createArray(args);
+		this.teil = createArray(VALIDATOR.verify(args));
 	}
 
 	private static short[] createArray(int[] args) {
@@ -111,6 +116,7 @@ public class GdvSatzTyp {
 	 * @return the wagnisart
 	 */
 	public int getWagnisart() {
+		assertTrue("Wagnisart", hasWagnisart());
 		return teil[2];
 	}
 
@@ -132,6 +138,7 @@ public class GdvSatzTyp {
 	 * @return z.B. 1 bei SatzTyp "0220.580.01"
 	 */
 	public int getBausparenArt() {
+		assertTrue("BausparenArt", hasBausparenArt());
 		return teil[2];
 	}
 
@@ -139,13 +146,10 @@ public class GdvSatzTyp {
 	 * Liefert die BausparenArt zurueck. Dies ist bei SatzTyp "0220.580.01" der letzte
 	 * Teil ("01"). Diese Methode macht nur bei den Satz-Typen
 	 * "0220.580.01" und "0220.580.2" Sinn.
-	 * <p>
-	 * Nur fuer den internen Gebrauch.
-	 * </p>
 	 *
 	 * @return z.B. "01" bei SatzTyp "0220.580.01"
 	 */
-	String getBausparenArtAsString() {
+	public String getBausparenArtAsString() {
 		if (!this.hasBausparenArt()) {
 			return "";
 		}
@@ -164,6 +168,7 @@ public class GdvSatzTyp {
 	 * @return z.B. 1 bei SatzTyp "0220.580.01"
 	 */
 	public int getArt() {
+		assertTrue("Art", hasArt());
 		if (this.getSparte() == 10) {
 			switch (this.getWagnisart()) {
 				case 1:
@@ -215,6 +220,7 @@ public class GdvSatzTyp {
 	 * @return the krankenFolgeNr
 	 */
 	public int getKrankenFolgeNr() {
+		assertTrue("KrankenFolgeNr", hasKrankenFolgeNr());
 		return teil[2];
 	}
 
@@ -224,6 +230,7 @@ public class GdvSatzTyp {
 	 * @return the lfd nummer
 	 */
 	public int getTeildatensatzNummer() {
+		assertTrue("TeildatensatzNummer", hasTeildatensatzNummer());
 		return teil.length > 3 ? teil[3] : 0;
 	}
 
@@ -319,6 +326,45 @@ public class GdvSatzTyp {
 			}
 		}
 		return buf.toString();
+	}
+
+	private void assertTrue(String attribute, boolean condition) {
+		if (!condition) {
+			throw new IllegalArgumentException(this + " hat keine " + attribute);
+		}
+	}
+
+
+
+	public static class Validator {
+
+		/**
+		 * Ein gueltiger GdvSatzTyp besteht aus 1 bis 4 Teilen.
+		 *
+		 * @param args Array, das ueberprueft wird
+		 * @return das Array selber (zur Weiterverarbeitung)
+		 */
+		public int[] validate(int[] args) {
+			if ((args.length < 1) || (args.length > 4)) {
+				throw new ValidationException("array " + Arrays.toString(args) + ": expected size is 1..4");
+			}
+			return args;
+		}
+
+		/**
+		 * Der Unterschied zu validate liegt nur in der ausgeloesten Exception.
+		 *
+		 * @param args Array, das ueberprueft wird
+		 * @return das Array selber (zur Weiterverarbeitung)
+		 */
+		public int[] verify(int[] args) {
+			try {
+				return validate(args);
+			} catch (ValidationException ex) {
+				throw new LocalizedIllegalArgumentException(ex);
+			}
+		}
+
 	}
 
 }

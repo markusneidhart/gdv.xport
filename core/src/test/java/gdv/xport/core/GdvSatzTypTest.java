@@ -97,6 +97,11 @@ public class GdvSatzTypTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testGetWagnisartIllegal() {
+        new GdvSatzTyp("0220.040").getWagnisart();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testOfInvalid() {
         new GdvSatzTyp("0001.a");
     }
@@ -235,6 +240,11 @@ public class GdvSatzTypTest {
         assertEquals(new GdvSatzTyp(220, 20, 3), new GdvSatzTyp("0220.020.3"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetKrankenFolgeNrIllegal() {
+        new GdvSatzTyp("0220.020").getKrankenFolgeNr();
+    }
+
     /**
      * Fuer Satzart 210, 211 und 220 gibt es einen "Allgemeinen Satz", die
      * "000" als Sparte hat. Daher sollte "0210" auf "0210.000" abgebildet
@@ -263,6 +273,11 @@ public class GdvSatzTypTest {
         GdvSatzTyp b = new GdvSatzTyp("0100.000");
         assertEquals(a.toString(), b.toString());
         ObjectTester.assertEquals(a, b);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCtor() {
+        new GdvSatzTyp();
     }
 
 }
