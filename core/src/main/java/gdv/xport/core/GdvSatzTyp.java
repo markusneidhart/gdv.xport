@@ -37,15 +37,11 @@ public class GdvSatzTyp {
 
 	private short[] n;
 
-	/** Bausparen, bausparenArt */
-	private final int bausparenArt;
-
 	/**
 	 * Damit laesst sich ein SatzTyp anhand der entsprechenden String-
 	 * Repraesentation erzeugen.
 	 *
 	 * @param nr z.B. "0210.050"
-	 * @return der entsprechende SatzTyp
 	 */
 	public GdvSatzTyp(String nr) {
 		this(toIntArray(nr));
@@ -140,7 +136,6 @@ public class GdvSatzTyp {
 		        + lfdNummer + " muss zwischen 0 und 9 liegen";
 		assert (bausparenArt == -1) || ((0 <= bausparenArt) && (bausparenArt <= 9)) : "bausparenArt "
 		        + bausparenArt + " muss zwischen 0 und 9 liegen";
-		this.bausparenArt = bausparenArt;
 	}
 
 	/**
@@ -189,18 +184,22 @@ public class GdvSatzTyp {
 	 * @since 5.0
 	 */
 	public int getBausparenArt() {
-		return this.bausparenArt;
+		//return this.bausparenArt;
+		return n[2];
 	}
 
 	/**
 	 * Liefert die BausparenArt zurueck. Dies ist bei SatzTyp "0220.580.01" der letzte
 	 * Teil ("01"). Diese Methode macht nur bei den Satz-Typen
 	 * "0220.580.01" und "0220.580.2" Sinn.
+	 * <p>
+	 * Nur fuer den internen Gebrauch.
+	 * </p>
 	 *
 	 * @return z.B. "01" bei SatzTyp "0220.580.01"
 	 */
-	public String getBausparenArtAsString() {
-		if (this.getBausparenArt() < 0) {
+	String getBausparenArtAsString() {
+		if (!this.hasBausparenArt()) {
 			return "";
 		}
 		if (this.getBausparenArt() == 1) {
@@ -245,7 +244,7 @@ public class GdvSatzTyp {
 	 * @return z.B. "01" bei SatzTyp "0220.580.01"
 	 */
 	public String getArtAsString() {
-		if (this.getBausparenArt() == 1) {
+		if (this.hasBausparenArt() && this.getBausparenArt() == 1) {
 			return "01";
 		} else {
 			return Integer.toString(this.getArt());
@@ -260,7 +259,7 @@ public class GdvSatzTyp {
 	 * @return true oder false
 	 */
 	public boolean hasArt() {
-		return (this.hasWagnisart()) || (this.getBausparenArt() >= 0) || (this.hasKrankenFolgeNr());
+		return this.hasWagnisart() || this.hasBausparenArt() || this.hasKrankenFolgeNr();
 	}
 	
 	/**
@@ -309,16 +308,15 @@ public class GdvSatzTyp {
 		return n.length > 2 && n[2] >= 0 && getSparte() == 20;
 	}
 
-    /**
-     * Liefert true zurueck, wenn die Bausparen-Artin Sparte 580, Satzart 220
-     * gesetzt ist.
-     * 
-     * @return true, if successful
-     */
-    public boolean hasBausparenArt()
-    {
-      return this.getBausparenArt() >= 0;
-    }
+	/**
+	 * Liefert true zurueck, wenn die Bausparen-Artin Sparte 580, Satzart 220
+	 * gesetzt ist.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean hasBausparenArt() {
+		return getSatzart() == 220 && getSparte() == 580;
+	}
 
 	/**
 	 * Liefert true zurueck, wenn die laufende Nummer (fuer Wagnisart) gesetzt
@@ -327,7 +325,6 @@ public class GdvSatzTyp {
 	 * @return true, if successful
 	 */
 	public boolean hasTeildatensatzNummer() {
-		//return this.getTeildatensatzNummer() >= 0;
 		return n.length > 3;
 	}
 

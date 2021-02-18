@@ -192,6 +192,12 @@ public class GdvSatzTypTest {
     }
 
     @Test
+    public void testHasBausparenArt() {
+        assertTrue(new GdvSatzTyp("0220.580.01").hasBausparenArt());
+        assertFalse(new GdvSatzTyp("0100").hasBausparenArt());
+    }
+
+    @Test
     public void testOfBausparenArt() {
         assertEquals(new GdvSatzTyp("0220.580.01"), new GdvSatzTyp(220, 580, 1));
         assertEquals(new GdvSatzTyp("0220.580.2"), new GdvSatzTyp(220, 580, 2));
