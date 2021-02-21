@@ -31,7 +31,7 @@ import java.util.Arrays;
  * @author oliver
  * @since 09.02.2021
  */
-public class GdvFeld implements Comparable<GdvFeld> {
+public class GdvFeld implements Comparable<GdvFeld>, Cloneable {
 
     private static final Logger LOG = LogManager.getLogger();
     private final GdvBezeichner bezeichner;
@@ -71,7 +71,7 @@ public class GdvFeld implements Comparable<GdvFeld> {
      * @param other das originale Feld
      */
     public GdvFeld(final GdvFeld other) {
-        this(other.bezeichner, other.byteAdresse, other.getInhalt());
+        this(other.bezeichner, other.byteAdresse, new String(other.inhalt));
     }
 
     /**
@@ -278,6 +278,24 @@ public class GdvFeld implements Comparable<GdvFeld> {
     @Override
     public int compareTo(final GdvFeld other) {
         return this.getByteAdresse() - other.getByteAdresse();
+    }
+
+    /**
+     * Die clone-Methode hat gegenueber dem CopyConstructor
+     * {@link GdvFeld#GdvFeld(GdvFeld)} den Vorteil, dass es den richtigen Typ
+     * fuer die abgeleiteten Klassen zurueckliefert.
+     *
+     * @return eine Kopie
+     */
+    @SuppressWarnings("squid:S2975")
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException ex) {
+            LOG.info("Clone wird als Fallback ueber Copy-Ctor realisiert:", ex);
+            return new GdvFeld(this);
+        }
     }
 
 }

@@ -20,6 +20,8 @@ package gdv.xport.satz;
 
 import gdv.xport.config.Config;
 import gdv.xport.core.ByteAdresse;
+import gdv.xport.core.GdvFeld;
+import gdv.xport.core.Record;
 import gdv.xport.feld.Bezeichner;
 import gdv.xport.feld.Feld;
 import gdv.xport.feld.NumFeld;
@@ -45,7 +47,7 @@ import static gdv.xport.feld.Bezeichner.SATZNUMMER;
  * @author ob@aosd.de
  * @since 04.10.2009
  */
-public class Teildatensatz extends Satz {
+public class Teildatensatz extends Satz implements Record {
 
     private static final Logger LOG = LogManager.getLogger(Teildatensatz.class);
 
@@ -209,6 +211,11 @@ public class Teildatensatz extends Satz {
         this.satznummer = new Zeichen(satznummer);
         this.satznummer.setInhalt(nr);
         add(this.satznummer);
+    }
+
+    @Override
+    public void add(final GdvFeld feld) {
+
     }
 
     /**

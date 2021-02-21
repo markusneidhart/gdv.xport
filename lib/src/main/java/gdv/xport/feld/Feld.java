@@ -239,6 +239,17 @@ public class Feld extends GdvFeld implements Cloneable {
     }
 
     /**
+     * Dieser Copy-Constructor dient dazu, um ein {@link GdvFeld} in ein
+     * {@link Feld} umzuwandeln
+     *
+     * @param feld zu wandelndes Feld
+     */
+    public Feld(GdvFeld feld) {
+        super(feld);
+        this.ausrichtung = Align.UNKNOWN;
+    }
+
+    /**
      * Die Default-Ausrichtung ist links-buendig. Diese Vorgabe kann aber von den Unterklassen ueberschrieben werde.
      *
      * @return links-buendig
