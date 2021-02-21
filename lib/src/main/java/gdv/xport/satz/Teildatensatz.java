@@ -20,6 +20,7 @@ package gdv.xport.satz;
 
 import gdv.xport.config.Config;
 import gdv.xport.core.ByteAdresse;
+import gdv.xport.core.GdvBezeichner;
 import gdv.xport.core.GdvFeld;
 import gdv.xport.core.Record;
 import gdv.xport.feld.Bezeichner;
@@ -52,7 +53,7 @@ public class Teildatensatz extends Satz implements Record {
     private static final Logger LOG = LogManager.getLogger(Teildatensatz.class);
 
     /** Diese Map dient fuer den Zugriff ueber den Namen. */
-    private final Map<Bezeichner, Feld> datenfelder = new HashMap<>();
+    private final Map<GdvBezeichner, Feld> datenfelder = new HashMap<>();
 
     /** Dieses Set dient zum Zugriff ueber die Nummer. */
     private final SortedSet<Feld> sortedFelder = new TreeSet<>();
@@ -141,7 +142,7 @@ public class Teildatensatz extends Satz implements Record {
      */
     public Teildatensatz(final Teildatensatz other) {
         this(other, other.getSatznummer().toInt());
-        for (Entry<Bezeichner, Feld> entry : other.datenfelder.entrySet()) {
+        for (Entry<GdvBezeichner, Feld> entry : other.datenfelder.entrySet()) {
             Feld copy = (Feld) entry.getValue().clone();
             this.datenfelder.put(entry.getKey(), copy);
             this.sortedFelder.add(copy);
@@ -366,8 +367,8 @@ public class Teildatensatz extends Satz implements Record {
         return findFeld(bezeichner);
     }
 
-    private Feld findFeld(final Bezeichner bezeichner) {
-        for (Entry<Bezeichner, Feld> entry : datenfelder.entrySet()) {
+    private Feld findFeld(final GdvBezeichner bezeichner) {
+        for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
             if (entry.getKey().getName().equals(bezeichner.getName())) {
                 return entry.getValue();
             }
@@ -532,7 +533,7 @@ public class Teildatensatz extends Satz implements Record {
         for (int i = 0; i < 256; i++) {
             data.append(' ');
         }
-        for (Entry<Bezeichner, Feld> entry : datenfelder.entrySet()) {
+        for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
             Feld feld = datenfelder.get(entry.getKey());
             int start = (feld.getByteAdresse() - 1) % 256;
             int end = start + feld.getAnzahlBytes();
