@@ -22,6 +22,7 @@ import gdv.xport.annotation.FeldInfo;
 import gdv.xport.annotation.FelderInfo;
 import gdv.xport.config.Config;
 import gdv.xport.core.ByteAdresse;
+import gdv.xport.core.GdvBezeichner;
 import gdv.xport.feld.*;
 import gdv.xport.io.ImportException;
 import gdv.xport.io.PushbackLineNumberReader;
@@ -355,7 +356,7 @@ public abstract class Satz implements Cloneable {
      * @param bezeichner der Feld-Beezeichner
      * @since 1.0
      */
-    public void remove(final Bezeichner bezeichner) {
+    public void remove(final GdvBezeichner bezeichner) {
         for (Teildatensatz tds : this.teildatensatz) {
             tds.remove(bezeichner);
         }

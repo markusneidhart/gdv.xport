@@ -32,7 +32,15 @@ public interface Record {
      *
      * @param feld das Feld
      */
-    void add(final GdvFeld feld);
+    void add(GdvFeld feld);
+
+    /**
+     * Falls ein Feld zuviel gesetzt wurde, kann es mit 'remove" wieder entfernt
+     * werden.
+     *
+     * @param bezeichner der Feld-Beezeichner
+     */
+    void remove(GdvBezeichner bezeichner);
 
     /**
      * Exportiert den Record.
@@ -40,6 +48,6 @@ public interface Record {
      * @param writer the writer
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    void export(final Writer writer) throws IOException;
+    void export(Writer writer) throws IOException;
 
 }

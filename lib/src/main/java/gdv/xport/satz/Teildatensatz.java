@@ -298,7 +298,7 @@ public class Teildatensatz extends Satz implements Record {
      * @since 1.0
      */
     @Override
-    public void remove(final Bezeichner bezeichner) {
+    public void remove(final GdvBezeichner bezeichner) {
         Feld feld = this.datenfelder.get(bezeichner);
         if (feld != null) {
             this.datenfelder.remove(bezeichner);
@@ -483,7 +483,7 @@ public class Teildatensatz extends Satz implements Record {
             if (this.datenfelder.containsKey(b)) {
                 return true;
             }
-            for (Entry<Bezeichner, Feld> entry : datenfelder.entrySet()) {
+            for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
                 if (entry.getKey().getName().equals(bezeichner.getName())) {
                     return true;
                 }
