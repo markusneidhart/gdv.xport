@@ -466,7 +466,7 @@ public class Teildatensatz extends Satz implements Record {
      * @since 0.9
      */
     public boolean hasFeld(final Enum feldX) {
-        return this.hasFeld(new Bezeichner(Feld.toBezeichnung(feldX)));
+        return this.hasFeld(Bezeichner.of(feldX));
     }
 
     /**
@@ -482,6 +482,11 @@ public class Teildatensatz extends Satz implements Record {
         for (Bezeichner b : bezeichner.getVariants()) {
             if (this.datenfelder.containsKey(b)) {
                 return true;
+            }
+            for (Entry<Bezeichner, Feld> entry : datenfelder.entrySet()) {
+                if (entry.getKey().getName().equals(bezeichner.getName())) {
+                    return true;
+                }
             }
         }
         return false;
