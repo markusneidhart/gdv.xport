@@ -43,6 +43,14 @@ public interface Record {
     void remove(GdvBezeichner bezeichner);
 
     /**
+     * Falls ein Feld zuviel gesetzt wurde, kann es mit 'remove" wieder
+     * entfernt werden.
+     *
+     * @param feld das Feld, das entfernt werden soll
+     */
+    void remove(GdvFeld feld);
+
+    /**
      * Exportiert den Record.
      *
      * @param writer the writer

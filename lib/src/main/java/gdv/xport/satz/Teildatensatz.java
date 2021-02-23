@@ -216,7 +216,11 @@ public class Teildatensatz extends Satz implements Record {
 
     @Override
     public void add(final GdvFeld feld) {
-
+        if (feld instanceof Feld) {
+            add((Feld) feld);
+        } else {
+            add(new Feld(feld));
+        }
     }
 
     /**
@@ -286,7 +290,7 @@ public class Teildatensatz extends Satz implements Record {
      *
      * @param feld das Feld, das entfernt werden soll
      */
-    public void remove(final Feld feld) {
+    public void remove(final GdvFeld feld) {
         this.remove(feld.getBezeichnung());
     }
 
