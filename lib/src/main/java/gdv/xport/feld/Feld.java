@@ -57,6 +57,14 @@ public class Feld extends GdvFeld implements Cloneable {
     @NotEqual("UNKNOWN")
     private final Align ausrichtung;
 
+    public static Feld of(GdvFeld feld) {
+        if (feld instanceof Feld) {
+            return (Feld) feld;
+        } else {
+            return new Feld(feld);
+        }
+    }
+
     /**
      * Legt ein neues Feld an. Dieser Default-Konstruktor ist fuer Unterklassen
      * vorgesehen. Da er aber auch fuer die {@link Cloneable}-Implementierung
