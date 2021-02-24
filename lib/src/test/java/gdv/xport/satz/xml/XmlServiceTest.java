@@ -19,6 +19,7 @@
 package gdv.xport.satz.xml;
 
 import gdv.xport.config.Config;
+import gdv.xport.core.GdvFeld;
 import gdv.xport.feld.Bezeichner;
 import gdv.xport.feld.Feld;
 import gdv.xport.feld.Zeichen;
@@ -400,9 +401,9 @@ public class XmlServiceTest extends AbstractXmlTest {
     public void testLebenTeildatensatz9() {
         SatzXml wertungssummen = xmlService.getSatzart(SatzTyp.of("0220.010.9.9"));
         Teildatensatz teildatensatz9 = wertungssummen.getTeildatensatz(1);
-        Feld haftungsbeginn = teildatensatz9.getFeld(20);
+        GdvFeld haftungsbeginn = teildatensatz9.getFeld(20);
         assertEquals(128, haftungsbeginn.getEndAdresse());
-        Feld beitragssumme = teildatensatz9.getFeld(21);
+        GdvFeld beitragssumme = teildatensatz9.getFeld(21);
         assertEquals("Feld 21 ist nicht Beitragssumme, sondern " + beitragssumme, 129, beitragssumme.getByteAdresse());
     }
 

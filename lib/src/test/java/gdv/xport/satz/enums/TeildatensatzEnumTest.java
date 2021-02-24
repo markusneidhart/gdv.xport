@@ -18,20 +18,18 @@
 
 package gdv.xport.satz.enums;
 
+import gdv.xport.core.GdvFeld;
 import gdv.xport.feld.Bezeichner;
-import gdv.xport.feld.Feld;
 import gdv.xport.feld.NumFeld;
 import gdv.xport.feld.Zeichen;
 import gdv.xport.satz.Satz;
 import gdv.xport.satz.Teildatensatz;
 import gdv.xport.satz.TeildatensatzTest;
-import gdv.xport.util.SatzFactory;
-import gdv.xport.util.SatzTyp;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit-Tests fuer {@link TeildatensatzEnum}.
@@ -53,7 +51,7 @@ public class TeildatensatzEnumTest extends TeildatensatzTest {
         assertEquals(tds.getSatznummer(), tds.getFeld(2));
         NumFeld two = new NumFeld(new Bezeichner("two"), 2, 5);
         tds.add(two);
-        Feld feld = tds.getFeld(2);
+        GdvFeld feld = tds.getFeld(2);
         assertEquals(two, feld);
     }
 

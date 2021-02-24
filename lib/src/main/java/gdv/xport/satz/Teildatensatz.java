@@ -56,7 +56,7 @@ public class Teildatensatz extends Satz implements Record {
     private final Map<GdvBezeichner, Feld> datenfelder = new HashMap<>();
 
     /** Dieses Set dient zum Zugriff ueber die Nummer. */
-    private final SortedSet<Feld> sortedFelder = new TreeSet<>();
+    private final SortedSet<GdvFeld> sortedFelder = new TreeSet<>();
 
     /** Dieses Feld brauchen wir, um die Satznummer abzuspeichern. */
     private Zeichen satznummer = new Zeichen(SATZNUMMER, 256);
@@ -214,15 +214,6 @@ public class Teildatensatz extends Satz implements Record {
         add(this.satznummer);
     }
 
-    @Override
-    public void add(final GdvFeld feld) {
-        if (feld instanceof Feld) {
-            add((Feld) feld);
-        } else {
-            add(new Feld(feld));
-        }
-    }
-
     /**
      * Fuegt das angegebene Feld in den Teildatensatz ein.
      * Bei Einfuegen wird ueberprueft, ob es zu Ueberschneidungen mit
@@ -234,7 +225,7 @@ public class Teildatensatz extends Satz implements Record {
      * @param feld Feld mit Name
      */
     @Override
-    public void add(final Feld feld) {
+    public void add(final GdvFeld feld) {
         for (Feld f : datenfelder.values()) {
             if (LOG.isDebugEnabled() && f.getBezeichnung().startsWith("Satznummer")
                     && feld.getBezeichnung().startsWith("Satznummer")) {
@@ -264,10 +255,25 @@ public class Teildatensatz extends Satz implements Record {
                     this, this.getSatzversion());
             feld.setInhalt(this.getSatzversion().getInhalt());
         }
-        datenfelder.put(feld.getBezeichner(), feld);
-        if (!sortedFelder.add(feld)) {
+        datenfelder.put(feld.getBezeichner(), Feld.of(feld));
+        if (!sortedFelder.add(Feld.of(feld))) {
             LOG.debug("Bezeichner {} schon vorhanden in {} {}.", feld.getBezeichner(), this, this.satznummer);
         }
+    }
+
+    /**
+     * Fuegt das angegebene Feld in den Teildatensatz ein.
+     * Bei Einfuegen wird ueberprueft, ob es zu Ueberschneidungen mit
+     * anderen Feldern kommt. Ausnahme hierbei ist das Satznummern-Feld
+     * auf Byte 256, mit dem der Teildatensatz vorinitialisiert wurde.
+     * Kommt es hier zu einer Ueberlappung, wird das Satznummern-Feld
+     * entfernt, da nicht alle Saetze dieses Feld besitzen.
+     *
+     * @param feld Feld mit Name
+     */
+    @Override
+    public void add(final Feld feld) {
+        add((GdvFeld) feld);
     }
 
     /**
@@ -336,7 +342,7 @@ public class Teildatensatz extends Satz implements Record {
      * @since 5.0
      */
     public void set(final ByteAdresse adresse, final String value) {
-        Feld x = this.getFeld(adresse);
+        GdvFeld x = this.getFeld(adresse);
         x.setInhalt(value);
     }
 
@@ -363,15 +369,27 @@ public class Teildatensatz extends Satz implements Record {
     @Override
     public Feld getFeld(final Bezeichner bezeichner) {
         for (Bezeichner b : bezeichner.getVariants()) {
-            Feld feld = datenfelder.get(b);
-            if (feld != null) {
-                return feld;
+            try {
+                return Feld.of(getFeld((GdvBezeichner) b));
+            } catch (IllegalArgumentException ex) {
+                LOG.info("{} wurde nicht gefunden ({}).", b, ex);
+                LOG.debug("Details:", ex);
             }
+        }
+        throw new IllegalArgumentException("Feld \"" + bezeichner + "\" nicht in " + this.toShortString()
+                + " nicht vorhanden!");
+    }
+
+    @Override
+    public GdvFeld getFeld(GdvBezeichner bezeichner) {
+        GdvFeld feld = datenfelder.get(bezeichner);
+        if (feld != null) {
+            return feld;
         }
         return findFeld(bezeichner);
     }
 
-    private Feld findFeld(final GdvBezeichner bezeichner) {
+    private GdvFeld findFeld(final GdvBezeichner bezeichner) {
         for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
             if (entry.getKey().getName().equals(bezeichner.getName())) {
                 return entry.getValue();
@@ -387,7 +405,8 @@ public class Teildatensatz extends Satz implements Record {
      * @param nr z.B. 1
      * @return das Feld (z.B. mit der Satzart)
      */
-    public Feld getFeld(final int nr) {
+    @Override
+    public GdvFeld getFeld(final int nr) {
      int myNr = nr;
 
     // 2018er-Version: in SA0100, TD1: es gibt kein Feld-Nr 27! Die SatzNr ist
@@ -453,7 +472,8 @@ public class Teildatensatz extends Satz implements Record {
      * @return das entsprechende Feld
      * @since 5.0
      */
-    public Feld getFeld(final ByteAdresse adresse) {
+    @Override
+    public GdvFeld getFeld(final ByteAdresse adresse) {
         for (Feld f : getFelder()) {
             if (adresse.intValue() == f.getByteAdresse()) {
                 return f;
@@ -484,13 +504,21 @@ public class Teildatensatz extends Satz implements Record {
     @Override
     public boolean hasFeld(final Bezeichner bezeichner) {
         for (Bezeichner b : bezeichner.getVariants()) {
-            if (this.datenfelder.containsKey(b)) {
+            if (hasFeld((GdvBezeichner) b)) {
                 return true;
             }
-            for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
-                if (entry.getKey().getName().equals(bezeichner.getName())) {
-                    return true;
-                }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasFeld(final GdvBezeichner bezeichner) {
+        if (this.datenfelder.containsKey(bezeichner)) {
+            return true;
+        }
+        for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
+            if (entry.getKey().getName().equals(bezeichner.getName())) {
+                return true;
             }
         }
         return false;
@@ -508,7 +536,7 @@ public class Teildatensatz extends Satz implements Record {
      * @return true, if successful
      * @since 1.0
      */
-    public boolean hasFeld(final Feld feld) {
+    public boolean hasFeld(final GdvFeld feld) {
         return this.datenfelder.containsKey(feld.getBezeichner());
     }
 

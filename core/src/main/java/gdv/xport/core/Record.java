@@ -35,12 +35,46 @@ public interface Record {
     void add(GdvFeld feld);
 
     /**
+     * Liefert das Feld mit der angegebenen Byte-Adresse. Im Gegensatz zum
+     * Index aendert sich die Adresse nicht, wenn neue Elemente in einen
+     * Record hinzukommen.
+     *
+     * @param adresse zwischen 1 und 256
+     * @return das entsprechende Feld
+     */
+    GdvFeld getFeld(ByteAdresse adresse);
+
+    /**
+     * Liefert das Feld mit der gewuenschten Nummer zurueck.
+     *
+     * @param nr z.B. 1
+     * @return das Feld (z.B. mit der Satzart)
+     */
+    GdvFeld getFeld(final int nr);
+
+    /**
+     * Liefert das Feld mit der angegebenen Bezeichner.
+     *
+     * @param bezeichner der Feld-Bezeichner
+     * @return das entsprechende Feld
+     */
+    GdvFeld getFeld(GdvBezeichner bezeichner);
+
+    /**
      * Falls ein Feld zuviel gesetzt wurde, kann es mit 'remove" wieder entfernt
      * werden.
      *
-     * @param bezeichner der Feld-Beezeichner
+     * @param bezeichner der Feld-Bezeichner
      */
     void remove(GdvBezeichner bezeichner);
+
+    /**
+     * Fraegt ab, ob das entsprechende Feld vorhanden ist.
+     *
+     * @param bezeichner gewuenschter Bezeichner des Feldes
+     * @return true / false
+     */
+    boolean hasFeld(final GdvBezeichner bezeichner);
 
     /**
      * Falls ein Feld zuviel gesetzt wurde, kann es mit 'remove" wieder

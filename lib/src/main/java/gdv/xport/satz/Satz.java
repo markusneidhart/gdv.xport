@@ -725,7 +725,7 @@ public abstract class Satz implements Cloneable {
 			Teildatensatz tds = getTeildatensatz(n);
 			if (tds.hasFeld(bezeichner)) {
 				Feld beforeVorzeichen = tds.getFeld(bezeichner);
-				return tds.getFeld(ByteAdresse.of(beforeVorzeichen.getEndAdresse()+1));
+				return Feld.of(tds.getFeld(ByteAdresse.of(beforeVorzeichen.getEndAdresse()+1)));
 			}
 		}
 		throw new IllegalArgumentException(bezeichner + " does not exist");

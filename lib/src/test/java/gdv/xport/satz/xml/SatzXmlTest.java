@@ -18,6 +18,7 @@
 
 package gdv.xport.satz.xml;
 
+import gdv.xport.core.GdvFeld;
 import gdv.xport.feld.Bezeichner;
 import gdv.xport.feld.Feld;
 import gdv.xport.feld.NumFeld;
@@ -182,7 +183,7 @@ public class SatzXmlTest extends AbstractDatensatzTest {
     @Test
     public void testTeildatensatz1() {
         Teildatensatz tds = satz100.getTeildatensatz(1);
-        Feld anrede = tds.getFeld(8);
+        GdvFeld anrede = tds.getFeld(8);
         assertEquals("wrong: " + anrede, 1, anrede.getAnzahlBytes());
         assertEquals("wrong: " + anrede, 43, anrede.getByteAdresse());
     }
