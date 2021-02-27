@@ -62,7 +62,7 @@ public class Datensatz extends Satz {
 	 * @since 0.6
 	 */
 	public Datensatz() {
-		this(0, getTeildatensaetzeFor(0, Feld1bis7.values()));
+		this(SatzTyp.of(0));
 	}
 
 	/**
@@ -171,11 +171,11 @@ public class Datensatz extends Satz {
 	 * @param n Anzahl der Teildatensaetze
 	 * @since 5.0
 	 */
-	public Datensatz(SatzTyp satzTyp, final int n) {
-		super(satzTyp.getSatzart(), n);
-		if (satzTyp.hasSparte()) {
-			this.sparte.setInhalt(satzTyp.getSparte());
-		}
+  public Datensatz(final SatzTyp satzTyp, final int n)
+  {
+    super(satzTyp, n);
+    if (satzTyp.hasSparte())
+      this.setSparte(satzTyp.getSparte());
 		this.setUpTeildatensaetze();
 	}
 

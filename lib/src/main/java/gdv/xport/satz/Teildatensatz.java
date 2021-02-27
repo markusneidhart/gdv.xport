@@ -110,6 +110,17 @@ public class Teildatensatz extends Satz implements Record {
     }
 
     /**
+     * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart.
+     *
+     * @param satzTyp z.B. 0220.050
+     */
+    public Teildatensatz(final SatzTyp satzTyp) {
+        super(satzTyp, 0);
+        this.satznummer.setInhalt(' ');
+        this.initDatenfelder();
+    }
+
+    /**
      * Instantiiert einen neuen Teildatensatz mit der angegebenen Satzart und
      * Nummer.
      *
