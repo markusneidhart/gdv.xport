@@ -19,7 +19,8 @@
 package gdv.xport.util;
 
 import gdv.xport.Datenpaket;
-import gdv.xport.feld.Bezeichner;
+import gdv.xport.core.GdvBezeichner;
+import gdv.xport.core.GdvFeld;
 import gdv.xport.feld.Feld;
 import gdv.xport.satz.Datensatz;
 import gdv.xport.satz.Satz;
@@ -41,7 +42,7 @@ import java.util.Map.Entry;
  */
 public final class CsvFormatter extends AbstractFormatter {
 
-    private final Map<Bezeichner, Feld> felder = new LinkedHashMap<>();
+    private final Map<GdvBezeichner, GdvFeld> felder = new LinkedHashMap<>();
 
     /**
      * Instantiates a new csv formatter.
@@ -105,7 +106,7 @@ public final class CsvFormatter extends AbstractFormatter {
     }
 
     private void buildHead(Satz satz) {
-        for (Feld feld : satz.getFelder()) {
+        for (GdvFeld feld : satz.getFelder()) {
             if (!felder.containsKey(feld.getBezeichner())) {
                 felder.put(feld.getBezeichner(), feld);
             }
@@ -113,7 +114,7 @@ public final class CsvFormatter extends AbstractFormatter {
     }
 
     private void writeHead() throws IOException {
-        for (Bezeichner bezeichner : this.felder.keySet()) {
+        for (GdvBezeichner bezeichner : this.felder.keySet()) {
             this.write(bezeichner.getName());
             this.write(";");
         }
@@ -130,10 +131,10 @@ public final class CsvFormatter extends AbstractFormatter {
 
     private void writeBody(Satz satz) throws IOException {
         this.resetFelder();
-        for (Feld feld : satz.getFelder()) {
+        for (GdvFeld feld : satz.getFelder()) {
             this.felder.put(feld.getBezeichner(), feld);
         }
-        for (Feld feld : this.felder.values()) {
+        for (GdvFeld feld : this.felder.values()) {
             this.write(StringEscapeUtils.escapeCsv(feld.getInhalt().trim()));
             this.write(";");
         }
@@ -142,7 +143,7 @@ public final class CsvFormatter extends AbstractFormatter {
     }
 
     private void resetFelder() {
-        for (Entry<Bezeichner, Feld> entry : this.felder.entrySet()) {
+        for (Entry<GdvBezeichner, GdvFeld> entry : this.felder.entrySet()) {
             entry.setValue(Feld.NULL_FELD);
         }
     }
