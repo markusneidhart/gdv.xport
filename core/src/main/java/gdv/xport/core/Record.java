@@ -19,6 +19,7 @@ package gdv.xport.core;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 
 /**
  * Ein Record ist eine Sammlung von Feldern.
@@ -75,6 +76,13 @@ public interface Record {
      * @return true / false
      */
     boolean hasFeld(final GdvBezeichner bezeichner);
+
+    /**
+     * Liefert alle Felder eines Teildatensatzes zurueck.
+     *
+     * @return Liste der Felder
+     */
+    Collection<? extends GdvFeld> getFelder();
 
     /**
      * Falls ein Feld zuviel gesetzt wurde, kann es mit 'remove" wieder
