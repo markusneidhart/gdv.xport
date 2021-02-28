@@ -638,7 +638,7 @@ public abstract class Satz implements Cloneable {
      * @param bezeichner gewuenschter Bezeichner des Feldes
      * @return true / false
      */
-    public boolean hasFeld(final Bezeichner bezeichner) {
+    public boolean hasFeld(final GdvBezeichner bezeichner) {
         for (Teildatensatz tds : teildatensatz) {
             if (tds.hasFeld(bezeichner)) {
                 return true;

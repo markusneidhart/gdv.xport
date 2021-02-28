@@ -509,21 +509,23 @@ public class Teildatensatz extends Satz implements Record {
      *
      * @param bezeichner gewuenschter Bezeichner des Feldes
      * @return true / false
-     * @see gdv.xport.satz.Satz#hasFeld(Bezeichner)
+     * @see gdv.xport.satz.Satz#hasFeld(GdvBezeichner)
      * @since 1.0
      */
     @Override
-    public boolean hasFeld(final Bezeichner bezeichner) {
-        for (Bezeichner b : bezeichner.getVariants()) {
-            if (hasFeld((GdvBezeichner) b)) {
-                return true;
+    public boolean hasFeld(final GdvBezeichner bezeichner) {
+        if (bezeichner instanceof Bezeichner) {
+            for (Bezeichner b : ((Bezeichner)bezeichner).getVariants()) {
+                if (hasGdvFeld(b)) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
+        return hasGdvFeld(bezeichner);
     }
 
-    @Override
-    public boolean hasFeld(final GdvBezeichner bezeichner) {
+    private boolean hasGdvFeld(GdvBezeichner bezeichner) {
         if (this.datenfelder.containsKey(bezeichner)) {
             return true;
         }
