@@ -153,7 +153,7 @@ public class Teildatensatz extends Satz implements Record {
      */
     public Teildatensatz(final Teildatensatz other) {
         this(other, other.getSatznummer().toInt());
-        for (Entry<GdvBezeichner, Feld> entry : other.datenfelder.entrySet()) {
+        for (Entry<GdvBezeichner, ? extends GdvFeld> entry : other.datenfelder.entrySet()) {
             Feld copy = (Feld) entry.getValue().clone();
             this.datenfelder.put(entry.getKey(), copy);
             this.sortedFelder.add(copy);
@@ -237,7 +237,7 @@ public class Teildatensatz extends Satz implements Record {
      */
     @Override
     public void add(final GdvFeld feld) {
-        for (Feld f : datenfelder.values()) {
+        for (GdvFeld f : datenfelder.values()) {
             if (LOG.isDebugEnabled() && f.getBezeichnung().startsWith("Satznummer")
                     && feld.getBezeichnung().startsWith("Satznummer")) {
                 LOG.debug(f.getBezeichnung() + "(" + f.getBezeichner().getTechnischerName() + ") gefunden in "
@@ -293,7 +293,7 @@ public class Teildatensatz extends Satz implements Record {
      * @param feld the feld
      * @return true, if is satznummer
      */
-    private static boolean isSatznummer(final Feld feld) {
+    private static boolean isSatznummer(final GdvFeld feld) {
         if ((feld.getByteAdresse() == 256) && (feld.getAnzahlBytes() == 1)) {
             String bezeichnung = feld.getBezeichnung();
             return bezeichnung.length() <= 11 && bezeichnung.startsWith("Satznummer");
@@ -320,7 +320,7 @@ public class Teildatensatz extends Satz implements Record {
      */
     @Override
     public void remove(final GdvBezeichner bezeichner) {
-        Feld feld = this.datenfelder.get(bezeichner);
+        GdvFeld feld = this.datenfelder.get(bezeichner);
         if (feld != null) {
             this.datenfelder.remove(bezeichner);
             this.sortedFelder.remove(feld);
@@ -401,7 +401,7 @@ public class Teildatensatz extends Satz implements Record {
     }
 
     private GdvFeld findFeld(final GdvBezeichner bezeichner) {
-        for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
+        for (Entry<GdvBezeichner, ? extends GdvFeld> entry : datenfelder.entrySet()) {
             if (entry.getKey().getName().equals(bezeichner.getName())) {
                 return entry.getValue();
             }
@@ -527,7 +527,7 @@ public class Teildatensatz extends Satz implements Record {
         if (this.datenfelder.containsKey(bezeichner)) {
             return true;
         }
-        for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
+        for (Entry<GdvBezeichner, ? extends GdvFeld> entry : datenfelder.entrySet()) {
             if (entry.getKey().getName().equals(bezeichner.getName())) {
                 return true;
             }
@@ -582,7 +582,7 @@ public class Teildatensatz extends Satz implements Record {
             data.append(' ');
         }
         for (Entry<GdvBezeichner, Feld> entry : datenfelder.entrySet()) {
-            Feld feld = datenfelder.get(entry.getKey());
+            GdvFeld feld = datenfelder.get(entry.getKey());
             int start = (feld.getByteAdresse() - 1) % 256;
             int end = start + feld.getAnzahlBytes();
             data.replace(start, end, feld.getInhalt());
@@ -597,7 +597,7 @@ public class Teildatensatz extends Satz implements Record {
      */
     @Override
     public void importFrom(final String content) throws IOException {
-        for (Feld feld : datenfelder.values()) {
+        for (GdvFeld feld : datenfelder.values()) {
             int begin = (feld.getByteAdresse() - 1) % 256;
             int end = begin + feld.getAnzahlBytes();
             if (end > content.length()) {
