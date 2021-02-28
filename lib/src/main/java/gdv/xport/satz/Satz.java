@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import gdv.xport.config.Config;
 import gdv.xport.core.ByteAdresse;
 import gdv.xport.core.GdvBezeichner;
+import gdv.xport.core.GdvSatz;
+import gdv.xport.core.GdvSatzTyp;
 import gdv.xport.feld.*;
 import gdv.xport.io.ImportException;
 import gdv.xport.io.PushbackLineNumberReader;
@@ -48,7 +50,7 @@ import static patterntesting.runtime.NullConstants.NULL_STRING;
  *
  * @author oliver
  */
-public abstract class Satz implements Cloneable {
+public abstract class Satz extends GdvSatz implements Cloneable {
 
 	private static final Logger LOG = LogManager.getLogger(Satz.class);
 
@@ -126,6 +128,7 @@ public abstract class Satz implements Cloneable {
 	 * @since 5.0
 	 */
 	public Satz(final SatzTyp art, final int n) {
+		super(new GdvSatzTyp(art.toString()));
 		this.satzart.setInhalt(art.getSatzart());
 		this.createTeildatensaetze(n);
 	}
@@ -137,6 +140,7 @@ public abstract class Satz implements Cloneable {
      * @param n    Anzahl der Teildatensaetze
      */
     public Satz(final Satz satz, final int n) {
+		super(new GdvSatzTyp(satz.getSatzTyp().toString()));
         this.satzart.setInhalt(satz.getSatzart());
         this.gdvSatzartName = satz.getGdvSatzartName();
         this.gdvSatzartNummer = satz.getGdvSatzartNummer();
@@ -167,6 +171,7 @@ public abstract class Satz implements Cloneable {
 	 * @since 5.0
 	 */
 	public Satz(final SatzTyp art, final List<? extends Teildatensatz> tdsList) {
+		super(new GdvSatzTyp(art.toString()));
 		this.satzart.setInhalt(art.getSatzart());
 		this.createTeildatensaetze(tdsList);
 	}
@@ -178,6 +183,7 @@ public abstract class Satz implements Cloneable {
      * @param tdsList     Liste mit den Teildatensaetzen
      */
     protected Satz(final Satz satz, final List<? extends Teildatensatz> tdsList) {
+		super(new GdvSatzTyp(satz.getSatzTyp().toString()));
         this.satzart.setInhalt(satz.getSatzart());
         this.satzVersion.setInhalt(satz.getSatzversion().getInhalt());
         this.gdvSatzartName = satz.getGdvSatzartName();
@@ -598,7 +604,7 @@ public abstract class Satz implements Cloneable {
 	 *
 	 * @param name gewuenschter Bezeichner des Feldes
 	 * @return das gesuchte Feld
-	 * @deprecated bitte {@link #hasFeld(Bezeichner)} verwenden
+	 * @deprecated bitte {@link #hasFeld(GdvBezeichner)} verwenden
 	 */
 	@Deprecated
 	public Feld containsFeld(final String name) {
@@ -733,7 +739,7 @@ public abstract class Satz implements Cloneable {
      *
      * @param bezeichner gewuenschter Bezeichner des Feldes
      * @return das gesuchte Feld
-	 * @deprecated bitte {@link #hasFeld(Bezeichner)} und {@link #getFeld(Bezeichner)} verwenden
+	 * @deprecated bitte {@link #hasFeld(GdvBezeichner)} und {@link #getFeld(Bezeichner)} verwenden
      */
     @Deprecated
     public Feld getFeldSafe(final Bezeichner bezeichner) {
@@ -1207,7 +1213,7 @@ public abstract class Satz implements Cloneable {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		try {
             return this.toShortString() + " (" + StringUtils.abbreviate(this.toLongString(), 47) + ")";
 		} catch (RuntimeException shouldNeverHappen) {
