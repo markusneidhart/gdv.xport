@@ -31,11 +31,9 @@ import patterntesting.runtime.log.LogWatch;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,17 +97,6 @@ public class XmlService extends GdvXmlService {
         }
         LOG.info("Instance {} with resource {} was created.", service, resource);
         return service;
-    }
-
-    private  static XMLEventReader createXMLEventReader(final String resourceName) throws XMLStreamException {
-        InputStream istream = XmlService.class.getResourceAsStream(resourceName);
-        if (istream == null) {
-            throw new XMLStreamException("resource '" + resourceName + "' not found");
-        }
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-        factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
-        return factory.createXMLEventReader(istream);
     }
 
     /** Only for internal fallback. */
