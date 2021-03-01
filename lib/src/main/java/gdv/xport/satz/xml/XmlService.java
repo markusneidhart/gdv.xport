@@ -19,6 +19,8 @@
 package gdv.xport.satz.xml;
 
 import gdv.xport.config.Config;
+import gdv.xport.core.GdvSatzTyp;
+import gdv.xport.core.GdvXmlService;
 import gdv.xport.util.NotRegisteredException;
 import gdv.xport.util.NotUniqueException;
 import gdv.xport.util.SatzTyp;
@@ -50,7 +52,7 @@ import java.util.Map;
  * @author oliver
  * @since 1.0 (15.08.2014)
  */
-public class XmlService {
+public class XmlService extends GdvXmlService {
 
     private static final Logger LOG = LogManager.getLogger(XmlService.class);
     private static final Map<String, XmlService> INSTANCES = new HashMap<>();
@@ -267,7 +269,7 @@ public class XmlService {
      *
      * @param satzart z.B. 100 fuer Satz100 (Adressteil)
      * @return die entsprechende Satzart
-     * @deprecated wird durch {@link #getSatzart(SatzTyp)} abgeloest
+     * @deprecated wird durch {@link #getSatzart(GdvSatzTyp)} abgeloest
      */
     @Deprecated
     public SatzXml getSatzart(final int satzart)  {
@@ -325,7 +327,8 @@ public class XmlService {
      * @param satzNr z.B. SatzTyp.of("0100") fuer Satz100 (Adressteil)
      * @return die entsprechende Satzart
      */
-    public SatzXml getSatzart(final SatzTyp satzNr) {
+    @Override
+    public SatzXml getSatzart(final GdvSatzTyp satzNr) {
         SatzXml satz = this.satzarten.get(satzNr);
         if (satz == null) {
             throw new NotRegisteredException(satzNr);

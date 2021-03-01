@@ -18,6 +18,8 @@
 
 package gdv.xport.util;
 
+import gdv.xport.core.GdvSatzTyp;
+
 /**
  * Falls eine Satzart noch nicht registriert wurde, wird dies Exception hier
  * geworfen.
@@ -43,7 +45,7 @@ public class NotRegisteredException extends RuntimeException {
      *
      * @param satzNr Satzart, die nicht registriert wurde
      */
-    public NotRegisteredException(final SatzTyp satzNr) {
+    public NotRegisteredException(final GdvSatzTyp satzNr) {
         super("unregistered Satzart " + satzNr);
     }
 
