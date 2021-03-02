@@ -30,9 +30,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -109,7 +111,7 @@ public class BezeichnerIT {
     @BeforeClass
     public static void readTechnischeNamen() throws ParserConfigurationException, SAXException, IOException {
         VuvmHandler handler = new VuvmHandler();
-        handler.scan("src/main/resources/gdv/xport/satz/xml/VUVM2018.xml");
+        handler.scan("/gdv/xport/satz/xml/VUVM2018.xml");
         TECHNISCHE_NAMEN.addAll(handler.getTechnischeNamen());
         TECHNISCHE_NAMEN.add("KhDeckungssummenInWETeil1");
         TECHNISCHE_NAMEN.add("KhDeckungssummenInWETeil2");
@@ -147,9 +149,16 @@ public class BezeichnerIT {
         private String elementValue;
 
         public void scan(String resource) throws ParserConfigurationException, SAXException, IOException {
+            try (InputStream istream = Bezeichner.class.getResourceAsStream(resource)) {
+                assertNotNull(istream);
+                scan(istream);
+            }
+        }
+
+        public void scan(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
-            saxParser.parse(resource, this);
+            saxParser.parse(inputStream, this);
         }
 
         public Set<String> getTechnischeNamen() {

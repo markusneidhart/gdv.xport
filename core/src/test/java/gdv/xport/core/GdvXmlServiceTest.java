@@ -36,4 +36,10 @@ public final class GdvXmlServiceTest {
         assertNotNull(service);
     }
 
+    @Test
+    public void testGetInstanceResourceNameOnly() throws XMLStreamException {
+        GdvXmlService service = GdvXmlService.getInstance("VUVM2018.xml");
+        assertNotNull(service);
+    }
+
 }

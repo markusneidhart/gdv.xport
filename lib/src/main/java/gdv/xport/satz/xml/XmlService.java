@@ -69,7 +69,7 @@ public class XmlService extends GdvXmlService {
             return getInstance(xmlResource);
         } catch (XMLStreamException ex) {
             LOG.error("Cannot parse XML from resource '{}':", xmlResource, ex);
-            return new XmlService();
+            throw new IllegalStateException(String.format("cannot parse XML from resource '%s'", xmlResource), ex);
         }
     }
 
@@ -99,11 +99,6 @@ public class XmlService extends GdvXmlService {
         return service;
     }
 
-    /** Only for internal fallback. */
-    private XmlService() {
-        LOG.debug("Default XmlService created.");
-    }
-
     /**
      * Instantiiert einen XML-Service.
      *
@@ -121,7 +116,7 @@ public class XmlService extends GdvXmlService {
      * @param startElement the start element
      * @throws XMLStreamException the XML stream exception
      */
-    public XmlService(final XMLEventReader parser, final StartElement startElement)throws XMLStreamException  {
+    public XmlService(final XMLEventReader parser, final StartElement startElement) throws XMLStreamException  {
         parse(startElement, parser);
     }
 

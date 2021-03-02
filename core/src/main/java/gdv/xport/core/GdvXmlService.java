@@ -37,6 +37,16 @@ public class GdvXmlService {
     private static final Logger LOG = LogManager.getLogger();
     private static final Map<String, GdvXmlService> INSTANCES = new HashMap<>();
 
+//    protected GdvXmlService() {
+//    }
+//
+//    protected GdvXmlService(SatzParser parser) throws XMLStreamException {
+//        this(parser, parser.getNextStartElement());
+//    }
+//
+//    public GdvXmlService(SatzParser parser, StartElement nextStartElement) {
+//    }
+
     /**
      * Liefert den Satz zur gewuenschten Satzart.
      *
@@ -63,6 +73,7 @@ public class GdvXmlService {
         if (service == null) {
             XMLEventReader parser = createXMLEventReader(resource);
             try {
+                //service = new GdvXmlService(new SatzParser(parser));
                 service = new GdvXmlService();
                 INSTANCES.put(resource, service);
             } finally {
@@ -75,6 +86,9 @@ public class GdvXmlService {
 
     protected static XMLEventReader createXMLEventReader(final String resourceName) throws XMLStreamException {
         InputStream istream = GdvXmlService.class.getResourceAsStream(resourceName);
+        if ((istream == null) && !resourceName.startsWith("/gdv")) {
+            return createXMLEventReader("/gdv/xport/satz/xml/" + resourceName);
+        }
         if (istream == null) {
             throw new XMLStreamException("resource '" + resourceName + "' not found");
         }
