@@ -17,6 +17,7 @@
  */
 package gdv.xport.core;
 
+import gdv.xport.core.internal.SatzParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,16 +37,6 @@ public class GdvXmlService {
 
     private static final Logger LOG = LogManager.getLogger();
     private static final Map<String, GdvXmlService> INSTANCES = new HashMap<>();
-
-//    protected GdvXmlService() {
-//    }
-//
-//    protected GdvXmlService(SatzParser parser) throws XMLStreamException {
-//        this(parser, parser.getNextStartElement());
-//    }
-//
-//    public GdvXmlService(SatzParser parser, StartElement nextStartElement) {
-//    }
 
     /**
      * Liefert den Satz zur gewuenschten Satzart.
@@ -73,7 +64,7 @@ public class GdvXmlService {
         if (service == null) {
             XMLEventReader parser = createXMLEventReader(resource);
             try {
-                //service = new GdvXmlService(new SatzParser(parser));
+                SatzParser satzParser = new SatzParser(parser);
                 service = new GdvXmlService();
                 INSTANCES.put(resource, service);
             } finally {
